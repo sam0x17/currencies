@@ -2,7 +2,6 @@ use core::marker::PhantomData;
 use num_traits::PrimInt;
 
 use crate::currency::*;
-use uint::construct_uint;
 
 pub trait Base: PrimInt {}
 impl<T: PrimInt> Base for T {}
