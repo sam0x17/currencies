@@ -102,11 +102,30 @@ impl<C: Currency> Div for Amount<C, Unchecked> {
     }
 }
 
+impl<C: Currency> Div for Amount<C, Checked> {
+    type Output = Option<C::Base>;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        self.0.checked_div(&rhs.0)
+    }
+}
+
 impl<C: Currency> Sub for Amount<C, Unchecked> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         Self::from_raw(self.0.sub(rhs.0))
+    }
+}
+
+impl<C: Currency> Sub for Amount<C, Checked> {
+    type Output = Option<Self>;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        match self.0.checked_sub(&rhs.0) {
+            Some(res) => Some(Self::from_raw(res)),
+            None => None,
+        }
     }
 }
 
@@ -118,6 +137,17 @@ impl<C: Currency> Add for Amount<C, Unchecked> {
     }
 }
 
+impl<C: Currency> Add for Amount<C, Checked> {
+    type Output = Option<Self>;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        match self.0.checked_add(&rhs.0) {
+            Some(res) => Some(Self::from_raw(res)),
+            None => None,
+        }
+    }
+}
+
 impl<C: Currency> Mul for Amount<C, Unchecked> {
     type Output = Self;
 
@@ -126,7 +156,18 @@ impl<C: Currency> Mul for Amount<C, Unchecked> {
     }
 }
 
-impl<C: Currency> One for Amount<C> {
+impl<C: Currency> Mul for Amount<C, Checked> {
+    type Output = Option<Self>;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        match self.0.checked_mul(&rhs.0) {
+            Some(res) => Some(Self::from_raw(res)),
+            None => None,
+        }
+    }
+}
+
+impl<C: Currency> One for Amount<C, Unchecked> {
     fn one() -> Self {
         Self::from_raw(<C as Currency>::Base::one())
     }
@@ -159,4 +200,15 @@ fn test_basic_ops() {
     let b = Amount::<USD>::from_raw(50_00);
     assert!(a + b == Amount::<USD>::from_raw(150_00));
     assert!(a / b == 2);
+}
+
+#[test]
+fn test_basic_checked_ops() {
+    let a = Amount::<USD, Checked>::from_raw(33_26);
+    let b = Amount::<USD, Checked>::from_raw(245_23);
+    assert!((a - b).is_none());
+    assert!((a + b).unwrap() == Amount::from_raw(278_49));
+    let a = Amount::<ETH, Checked>::from_raw(U256::max_value());
+    assert!((a + Amount::from_raw(U256::from(1))).is_none());
+    assert!((a - Amount::from_raw(U256::from(1))).is_some());
 }

@@ -1,5 +1,5 @@
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
-pub enum ForceChecked {}
+pub enum Checked {}
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub enum Unchecked {}
@@ -12,6 +12,6 @@ mod sealed {
 }
 
 impl Safety for Unchecked {}
-impl Safety for ForceChecked {}
+impl Safety for Checked {}
 
 pub(crate) use sealed::Safety;
