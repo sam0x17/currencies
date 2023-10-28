@@ -9,26 +9,20 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     /// [`Currency`] (a value of 0 means only integers can be represented). This is also the
     /// position of the decimal point from the RHS of the underlying [`Base`].
     const FRAC_DIGITS: usize;
-
-    /// When set to true, only checked math operations are allowed on amounts of this
-    /// [`Currency`], making it impossible to have unhandled underflow/overflow errors.
-    const SAFE: bool;
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct USD<const SAFE: bool = false>;
+pub struct USD;
 
-impl<const SAFE: bool> Currency for USD<SAFE> {
+impl Currency for USD {
     type Base = u64;
     const FRAC_DIGITS: usize = 2;
-    const SAFE: bool = SAFE;
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ETH<const SAFE: bool = false>;
+pub struct ETH;
 
-impl<const SAFE: bool> Currency for ETH<SAFE> {
+impl Currency for ETH {
     type Base = U256;
     const FRAC_DIGITS: usize = 18;
-    const SAFE: bool = SAFE;
 }

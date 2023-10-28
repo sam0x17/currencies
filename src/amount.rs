@@ -1,10 +1,11 @@
 use core::{
     marker::PhantomData,
-    ops::{Add, Div, Mul, Rem, Sub},
+    ops::{Add, Div, Mul, Rem, Shl, Shr, Sub},
 };
 use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, Num, One, Unsigned, Zero};
 
 use crate::currency::*;
+use crate::safety::{self, *};
 
 pub use primitive_types::{U256, U512};
 
@@ -26,6 +27,10 @@ pub trait Base:
     + Add
     + Sub
     + Div
+    + Shl
+    + Shr
+    + Shl<usize>
+    + Shr<usize>
     + PartialEq
     + Eq
     + PartialOrd
@@ -50,6 +55,10 @@ impl<
             + Add
             + Sub
             + Div
+            + Shl
+            + Shr
+            + Shl<usize>
+            + Shr<usize>
             + PartialEq
             + Eq
             + PartialOrd
@@ -63,80 +72,73 @@ impl<
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Amount<C: Currency = USD>(C::Base, PhantomData<C>);
+pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
+    C::Base,
+    PhantomData<C>,
+    PhantomData<Safety>,
+);
 
-impl<C: Currency> Amount<C> {
+impl<C: Currency, Safety: safety::Safety> Amount<C, Safety> {
     /// Constructs an [`Amount`] from a compatible raw [`Base`] value.
     #[inline]
     pub const fn from_raw(amount: C::Base) -> Self {
-        Amount(amount, PhantomData)
+        Amount(amount, PhantomData, PhantomData)
     }
 }
 
-impl<C: Currency> Rem for Amount<C> {
+impl<C: Currency, Safety: safety::Safety> Rem for Amount<C, Safety> {
     type Output = Self;
 
     fn rem(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self::from_raw(self.0.rem(rhs.0))
     }
 }
 
-impl<C: Currency> Div for Amount<C> {
-    type Output = Self;
+impl<C: Currency> Div for Amount<C, Unchecked> {
+    type Output = C::Base;
 
     fn div(self, rhs: Self) -> Self::Output {
-        todo!()
+        self.0.div(rhs.0)
     }
 }
 
-impl<C: Currency> Sub for Amount<C> {
+impl<C: Currency> Sub for Amount<C, Unchecked> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self::from_raw(self.0.sub(rhs.0))
     }
 }
 
-impl<C: Currency> Add for Amount<C> {
+impl<C: Currency> Add for Amount<C, Unchecked> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self::from_raw(self.0.add(rhs.0))
     }
 }
 
-impl<C: Currency> Mul for Amount<C> {
+impl<C: Currency> Mul for Amount<C, Unchecked> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        todo!()
+        Self::from_raw(self.0.mul(rhs.0))
     }
 }
 
 impl<C: Currency> One for Amount<C> {
     fn one() -> Self {
-        todo!()
+        Self::from_raw(<C as Currency>::Base::one())
     }
 }
 
-impl<C: Currency> Zero for Amount<C> {
+impl<C: Currency> Zero for Amount<C, Unchecked> {
     fn zero() -> Self {
-        todo!()
+        Self::from_raw(<C as Currency>::Base::zero())
     }
 
     fn is_zero(&self) -> bool {
-        todo!()
-    }
-}
-
-impl<C: Currency> Num for Amount<C> {
-    type FromStrRadixErr = <<C as Currency>::Base as Num>::FromStrRadixErr;
-
-    fn from_str_radix(str: &str, radix: u32) -> Result<Self, Self::FromStrRadixErr> {
-        match C::Base::from_str_radix(str, radix) {
-            Ok(amount) => Ok(Amount::from_raw(amount)),
-            Err(err) => Err(err),
-        }
+        self.0.is_zero()
     }
 }
 
@@ -149,4 +151,12 @@ fn test_from_raw() {
     assert!(a == a);
     assert!(b != c);
     assert!(a != c);
+}
+
+#[test]
+fn test_basic_ops() {
+    let a = Amount::<USD>::from_raw(100_00);
+    let b = Amount::<USD>::from_raw(50_00);
+    assert!(a + b == Amount::<USD>::from_raw(150_00));
+    assert!(a / b == 2);
 }
