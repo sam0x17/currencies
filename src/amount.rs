@@ -200,6 +200,10 @@ fn test_basic_ops() {
     let b = Amount::<USD>::from_raw(50_00);
     assert!(a + b == Amount::<USD>::from_raw(150_00));
     assert!(a / b == 2);
+    assert!(a * b == Amount::<USD>::from_raw(500000_00));
+    let a = Amount::<USD>::from_raw(u64::MAX);
+    assert!(a - Amount::<USD>::from_raw(0_01) < a);
+    assert!(a - Amount::<USD>::from_raw(0_01) > b);
 }
 
 #[test]
@@ -208,6 +212,9 @@ fn test_basic_checked_ops() {
     let b = Amount::<USD, Checked>::from_raw(245_23);
     assert!((a - b).is_none());
     assert!((a + b).unwrap() == Amount::from_raw(278_49));
+    assert!((a / b).unwrap() == 0);
+    assert!((b / a).unwrap() == 7);
+    assert!((a / Amount::from_raw(0)).is_none());
     let a = Amount::<ETH, Checked>::from_raw(U256::max_value());
     assert!((a + Amount::from_raw(U256::from(1))).is_none());
     assert!((a - Amount::from_raw(U256::from(1))).is_some());
