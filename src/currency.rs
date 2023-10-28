@@ -1,5 +1,4 @@
 use crate::amount::*;
-use primitive_types::U256;
 
 pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::hash::Hash {
     /// Represents the underlying (signed or un-signed) primitive integer type used to
@@ -30,6 +29,6 @@ pub struct ETH<const SAFE: bool = false>;
 
 impl<const SAFE: bool> Currency for ETH<SAFE> {
     type Base = U256;
-    const FRAC_DIGITS: usize = 2;
+    const FRAC_DIGITS: usize = 18;
     const SAFE: bool = SAFE;
 }

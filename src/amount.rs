@@ -6,6 +6,8 @@ use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, One, Unsigned, 
 
 use crate::currency::*;
 
+pub use primitive_types::U256;
+
 pub trait Base:
     Unsigned
     + Zero
@@ -52,24 +54,11 @@ impl<
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Amount<
-    // Represents the underlying (signed or un-signed) primitive integer type used to represent
-    // this amount
-    B: Base = u64,
-    // Determines the number of supported fractional decimal digits for this amount (a value of
-    // 0 means only integers can be represented). This is also the position of the decimal
-    // point from the RHS of the underlying integer representation of the amount.
-    const FRAC_DIGITS: usize = 2,
-    // When set to true, only checked operations are allowed on this amount, making it
-    // impossible to have unhandled underflow/overflow errors with this amount
-    const SAFE: bool = true,
-    C: Currency = USD,
->(B, PhantomData<C>);
+pub struct Amount<C: Currency = USD>(C::Base, PhantomData<C>);
 
-impl<B: Base, const FRAC_DIGITS: usize, const SAFE: bool, C: Currency>
-    Amount<B, FRAC_DIGITS, SAFE, C>
-{
-    pub const fn from_raw(amount: B) -> Self {
+impl<C: Currency> Amount<C> {
+    /// Constructs an [`Amount`] from a compatible raw [`Base`] value.
+    pub const fn from_raw(amount: C::Base) -> Self {
         Amount(amount, PhantomData)
     }
 }
@@ -78,6 +67,9 @@ impl<B: Base, const FRAC_DIGITS: usize, const SAFE: bool, C: Currency>
 fn test_types() {
     let a: Amount = Amount::from_raw(1000_00);
     let b: Amount = Amount::from_raw(200_00);
+    let c: Amount<USD> = Amount::from_raw(50);
     assert!(a != b);
     assert!(a == a);
+    assert!(b != c);
+    assert!(a != c);
 }
