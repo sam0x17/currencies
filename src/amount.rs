@@ -1,8 +1,10 @@
 use core::{
     marker::PhantomData,
-    ops::{Add, Div, Mul, Rem, Shl, Shr, Sub},
+    ops::{Add, AddAssign, Div, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
 };
-use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, Num, One, Unsigned, Zero};
+use num_traits::{
+    CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, Unsigned, Zero,
+};
 
 use crate::currency::*;
 use crate::safety::{self, *};
@@ -129,6 +131,12 @@ impl<C: Currency> Sub for Amount<C, Checked> {
     }
 }
 
+impl<C: Currency> SubAssign for Amount<C, Unchecked> {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = *self - rhs;
+    }
+}
+
 impl<C: Currency> Add for Amount<C, Unchecked> {
     type Output = Self;
 
@@ -148,6 +156,12 @@ impl<C: Currency> Add for Amount<C, Checked> {
     }
 }
 
+impl<C: Currency> AddAssign for Amount<C, Unchecked> {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
+    }
+}
+
 impl<C: Currency> Mul for Amount<C, Unchecked> {
     type Output = Self;
 
@@ -164,6 +178,78 @@ impl<C: Currency> Mul for Amount<C, Checked> {
             Some(res) => Some(Self::from_raw(res)),
             None => None,
         }
+    }
+}
+
+impl<C: Currency> Mul<u8> for Amount<C, Unchecked>
+where
+    C::Base: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: u8) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Base::from_u8(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> Mul<u16> for Amount<C, Unchecked>
+where
+    C::Base: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: u16) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Base::from_u16(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> Mul<u32> for Amount<C, Unchecked>
+where
+    C::Base: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: u32) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Base::from_u32(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> Mul<u64> for Amount<C, Unchecked>
+where
+    C::Base: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: u64) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Base::from_u64(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> Mul<u128> for Amount<C, Unchecked>
+where
+    C::Base: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: u128) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Base::from_u128(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> Mul<usize> for Amount<C, Unchecked>
+where
+    C::Base: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: usize) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Base::from_usize(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> MulAssign for Amount<C, Unchecked> {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = *self * rhs;
     }
 }
 
@@ -195,19 +281,28 @@ fn test_from_raw() {
 }
 
 #[test]
-fn test_basic_ops() {
+fn test_basic_ops_unchecked() {
     let a = Amount::<USD>::from_raw(100_00);
     let b = Amount::<USD>::from_raw(50_00);
-    assert!(a + b == Amount::<USD>::from_raw(150_00));
+    assert!(a + b == Amount::from_raw(150_00));
     assert!(a / b == 2);
-    assert!(a * b == Amount::<USD>::from_raw(500000_00));
+    assert!(a * b == Amount::from_raw(500000_00));
+    let mut c = a;
+    c += b;
+    assert!(c == Amount::from_raw(150_00));
+    assert!(a * 3u8 == Amount::from_raw(300_00));
+    assert!(a * 3u16 == Amount::from_raw(300_00));
+    assert!(a * 3u32 == Amount::from_raw(300_00));
+    assert!(a * 3u64 == Amount::from_raw(300_00));
+    assert!(a * 3u128 == Amount::from_raw(300_00));
+    assert!(a * 3usize == Amount::from_raw(300_00));
     let a = Amount::<USD>::from_raw(u64::MAX);
     assert!(a - Amount::<USD>::from_raw(0_01) < a);
     assert!(a - Amount::<USD>::from_raw(0_01) > b);
 }
 
 #[test]
-fn test_basic_checked_ops() {
+fn test_basic_ops_checked() {
     let a = Amount::<USD, Checked>::from_raw(33_26);
     let b = Amount::<USD, Checked>::from_raw(245_23);
     assert!((a - b).is_none());
