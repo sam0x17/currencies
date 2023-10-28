@@ -5,3 +5,4 @@ edition = "2021"
 authors = ["sam0x17"]
 
 [dependencies]
+num-traits = "0.2.17"
