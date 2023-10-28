@@ -1,3 +1,6 @@
+use core::marker::PhantomData;
 use num_traits::PrimInt;
 
-pub struct Amount<B: PrimInt = u64, const P: usize = 2>(B);
+use crate::currency::*;
+
+pub struct Amount<B: PrimInt = u64, const P: usize = 2, C: Currency = USD>(B, PhantomData<C>);
