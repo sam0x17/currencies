@@ -6,4 +6,5 @@ authors = ["sam0x17"]
 
 [dependencies]
 num-traits = "0.2.17"
+primitive-types = { version = "0.12.2", features = ["num-traits"] }
 uint = "0.9.5"

@@ -1,5 +1,5 @@
 use crate::amount::*;
-use crate::U256;
+use primitive_types::U256;
 
 pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::hash::Hash {
     /// Represents the underlying (signed or un-signed) primitive integer type used to
@@ -17,18 +17,18 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct USD<const SAFE: bool = false, const SIGNED: bool = true>;
+pub struct USD<const SAFE: bool = false>;
 
-impl<const SAFE: bool, const SIGNED: bool> Currency for USD<SAFE, SIGNED> {
+impl<const SAFE: bool> Currency for USD<SAFE> {
     type Base = u64;
     const FRAC_DIGITS: usize = 2;
     const SAFE: bool = SAFE;
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ETH<const SAFE: bool = false, const SIGNED: bool = true>;
+pub struct ETH<const SAFE: bool = false>;
 
-impl<const SAFE: bool, const SIGNED: bool> Currency for ETH<SAFE, SIGNED> {
+impl<const SAFE: bool> Currency for ETH<SAFE> {
     type Base = U256;
     const FRAC_DIGITS: usize = 2;
     const SAFE: bool = SAFE;

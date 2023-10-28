@@ -1,10 +1,55 @@
-use core::marker::PhantomData;
-use num_traits::PrimInt;
+use core::{
+    marker::PhantomData,
+    ops::{Add, Div, Mul, Sub},
+};
+use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, One, Unsigned, Zero};
 
 use crate::currency::*;
 
-pub trait Base: PrimInt {}
-impl<T: PrimInt> Base for T {}
+pub trait Base:
+    Unsigned
+    + Zero
+    + One
+    + CheckedAdd
+    + CheckedSub
+    + CheckedDiv
+    + CheckedMul
+    + Mul
+    + Add
+    + Sub
+    + Div
+    + PartialEq
+    + Eq
+    + PartialOrd
+    + Ord
+    + Copy
+    + Clone
+    + core::hash::Hash
+{
+}
+
+impl<
+        T: Unsigned
+            + Zero
+            + One
+            + CheckedAdd
+            + CheckedSub
+            + CheckedDiv
+            + CheckedMul
+            + Mul
+            + Add
+            + Sub
+            + Div
+            + PartialEq
+            + Eq
+            + PartialOrd
+            + Ord
+            + Copy
+            + Clone
+            + core::hash::Hash,
+    > Base for T
+{
+}
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Amount<
