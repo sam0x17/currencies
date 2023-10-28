@@ -6,8 +6,13 @@ use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, One, Unsigned, 
 
 use crate::currency::*;
 
-pub use primitive_types::U256;
+pub use primitive_types::{U256, U512};
 
+/// Automatically implemented on types capable of being used as the "base" / backing type for
+/// an [`Amount`] of [`Currency`].
+///
+/// Must be [`Unsigned`] and implement common [`num_traits`] and basic [`core::ops`] traits
+/// (see bounds).
 pub trait Base:
     Unsigned
     + Zero
@@ -27,6 +32,7 @@ pub trait Base:
     + Copy
     + Clone
     + core::hash::Hash
+    + core::fmt::Debug
 {
 }
 
@@ -48,7 +54,8 @@ impl<
             + Ord
             + Copy
             + Clone
-            + core::hash::Hash,
+            + core::hash::Hash
+            + core::fmt::Debug,
     > Base for T
 {
 }
