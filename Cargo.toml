@@ -6,3 +6,4 @@ authors = ["sam0x17"]
 
 [dependencies]
 num-traits = "0.2.17"
+uint = "0.9.5"
