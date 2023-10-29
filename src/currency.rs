@@ -21,6 +21,7 @@ impl Default for FormatStyle {
     }
 }
 
+/// Uniquely defines a particular currency, such as [`USD`], [`BTC`], or [`ETH`].
 pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::hash::Hash {
     /// Represents the underlying (signed or un-signed) primitive integer type used to
     /// represent [`Amount`]s of this [`Currency`].
@@ -95,9 +96,23 @@ impl Currency for ETH {
     type Base = U256;
     const FRAC_DIGITS: usize = 18;
     const CODE: &'static str = "ETH";
-    const SYMBOL: &'static str = "Ξ";
+    const SYMBOL: &'static str = "ETH"; // "Ξ" is occasionally used, but "ETH" is much more common
     const PROPER_NAME: &'static str = "Ethereum";
     const STYLE: FormatStyle = FormatStyle::PrefixAttached;
+    const IS_ISO: bool = false;
+    const IS_CRYPTO: bool = true;
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct BTC;
+
+impl Currency for BTC {
+    type Base = U256;
+    const FRAC_DIGITS: usize = 8;
+    const CODE: &'static str = "BTC";
+    const SYMBOL: &'static str = "BTC"; // The official Unicode character for Bitcoin is "₿", but often "BTC" is more recognized.
+    const PROPER_NAME: &'static str = "Bitcoin";
+    const STYLE: FormatStyle = FormatStyle::SuffixSpaced; // Commonly formatted as "0.001 BTC"
     const IS_ISO: bool = false;
     const IS_CRYPTO: bool = true;
 }
