@@ -75,44 +75,34 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     const IS_CRYPTO: bool;
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct USD;
 
-impl Currency for USD {
-    type Base = u64;
-    const FRAC_DIGITS: usize = 2;
-    const CODE: &'static str = "USD";
-    const SYMBOL: &'static str = "$";
-    const PROPER_NAME: &'static str = "United States Dollar";
-    const STYLE: FormatStyle = FormatStyle::PrefixAttached;
-    const IS_ISO: bool = true;
-    const IS_CRYPTO: bool = false;
+macro_rules! define_currency {
+    (
+        $currency_name:ident, 
+        $base_type:ty, 
+        $frac_digits:expr, 
+        $symbol:expr, 
+        $proper_name:expr, 
+        $style:ident,
+        $is_iso:expr, 
+        $is_crypto:expr
+    ) => {
+        #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        pub struct $currency_name;
+
+        impl $crate::currency::Currency for $currency_name {
+            type Base = $base_type;
+            const FRAC_DIGITS: usize = $frac_digits;
+            const CODE: &'static str = stringify!($currency_name);
+            const SYMBOL: &'static str = $symbol;
+            const PROPER_NAME: &'static str = $proper_name;
+            const STYLE: $crate::currency::FormatStyle = $crate::currency::FormatStyle::$style;
+            const IS_ISO: bool = $is_iso;
+            const IS_CRYPTO: bool = $is_crypto;
+        }
+    };
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ETH;
-
-impl Currency for ETH {
-    type Base = U256;
-    const FRAC_DIGITS: usize = 18;
-    const CODE: &'static str = "ETH";
-    const SYMBOL: &'static str = "ETH"; // "Ξ" is occasionally used, but "ETH" is much more common
-    const PROPER_NAME: &'static str = "Ethereum";
-    const STYLE: FormatStyle = FormatStyle::PrefixAttached;
-    const IS_ISO: bool = false;
-    const IS_CRYPTO: bool = true;
-}
-
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct BTC;
-
-impl Currency for BTC {
-    type Base = U256;
-    const FRAC_DIGITS: usize = 8;
-    const CODE: &'static str = "BTC";
-    const SYMBOL: &'static str = "BTC"; // The official Unicode character for Bitcoin is "₿", but often "BTC" is more recognized.
-    const PROPER_NAME: &'static str = "Bitcoin";
-    const STYLE: FormatStyle = FormatStyle::SuffixSpaced; // Commonly formatted as "0.001 BTC"
-    const IS_ISO: bool = false;
-    const IS_CRYPTO: bool = true;
-}
+define_currency!(USD, u64, 2, "$", "United States Dollar", PrefixAttached, true, false);
+define_currency!(ETH, U256, 18, "ETH", "Ethereum", SuffixSpaced, false, true);
+define_currency!(BTC, U256, 8, "BTC", "Bitcoin", SuffixSpaced, false, true);
