@@ -1,3 +1,5 @@
+//! Home of the [`Amount`] struct and supporting types and impls.
+
 use core::{
     marker::PhantomData,
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
@@ -91,7 +93,9 @@ impl<
 {
 }
 
+/// Provides access to [`TrailingZeros::trailing_zeros`] without needing to impl [`PrimInt`].
 pub trait TrailingZeros {
+    /// Returns the number of trailing zeros at the end of `self`.
     fn trailing_zeros(&self) -> u32;
 }
 
@@ -101,11 +105,22 @@ impl<T: PrimInt> TrailingZeros for T {
     }
 }
 
+/// Generically represents an amount of a specified [`Currency`].
+///
+/// Setting [`Safety`] to [`Unchecked`] will allow for full use of all supported math
+/// operators, but allows for things like overflowing, division by zero, that can lead to
+/// panics during runtime.
+///
+/// Setting [`Safety`] to [`Checked`] replaces basic arithmetic operators with their checked
+/// counterparts that can never panic but typically return an [`Option`] or [`Result`] that
+/// must be used. This should make usages of this [`Amount`] 100% safe to use in situations
+/// where panicking is dangerous.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
     C::Backing,
     PhantomData<C>,
     PhantomData<Safety>,
+    // TODO: eventually we could add Signedness here
 );
 
 impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safety> {
