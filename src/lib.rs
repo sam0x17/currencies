@@ -1,7 +1,7 @@
 #![no_std]
 
 pub mod amount;
-pub use amount::*;
+pub use amount::{Amount, Backing};
 pub mod currency;
 pub use currency::Currency;
 mod u256;

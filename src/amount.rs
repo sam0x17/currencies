@@ -1,10 +1,11 @@
 use core::{
     marker::PhantomData,
-    ops::{Add, AddAssign, Div, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
 };
 use num_integer::Integer;
 use num_traits::{
-    CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, Unsigned, Zero,
+    CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, PrimInt, ToPrimitive,
+    Unsigned, Zero,
 };
 
 use crate::currency::*;
@@ -29,6 +30,10 @@ pub trait Backing:
     + Add
     + Sub
     + Div
+    + AddAssign
+    + SubAssign
+    + MulAssign
+    + DivAssign
     + Shl
     + Shr
     + Shl<usize>
@@ -41,37 +46,11 @@ pub trait Backing:
     + Clone
     + core::hash::Hash
     + core::fmt::Debug
+    + core::fmt::Display
+    + TrailingZeros
+    + From<u32>
+    + ToPrimitive
 {
-    fn pow(&self, exp: usize) -> Self {
-        let mut base = *self;
-        let mut acc: Self = One::one();
-        let mut exp = exp;
-
-        while exp > 0 {
-            if (exp & 1) == 1 {
-                acc = acc * base;
-            }
-            base = base * base;
-            exp >>= 1;
-        }
-
-        acc
-    }
-
-    fn checked_pow(&self, mut exp: usize) -> Option<Self> {
-        let mut base = *self;
-        let mut acc: Self = One::one();
-
-        while exp > 0 {
-            if (exp & 1) == 1 {
-                acc = acc.checked_mul(&base)?;
-            }
-            base = base.checked_mul(&base)?;
-            exp >>= 1;
-        }
-
-        Some(acc)
-    }
 }
 
 impl<
@@ -88,6 +67,10 @@ impl<
             + Add
             + Sub
             + Div
+            + AddAssign
+            + SubAssign
+            + MulAssign
+            + DivAssign
             + Shl
             + Shr
             + Shl<usize>
@@ -99,9 +82,23 @@ impl<
             + Copy
             + Clone
             + core::hash::Hash
-            + core::fmt::Debug,
+            + core::fmt::Debug
+            + core::fmt::Display
+            + TrailingZeros
+            + From<u32>
+            + ToPrimitive,
     > Backing for T
 {
+}
+
+pub trait TrailingZeros {
+    fn trailing_zeros(&self) -> u32;
+}
+
+impl<T: PrimInt> TrailingZeros for T {
+    fn trailing_zeros(&self) -> u32 {
+        PrimInt::trailing_zeros(*self)
+    }
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -111,19 +108,39 @@ pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
     PhantomData<Safety>,
 );
 
-// impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safety> {
-//     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-//         let (major, minor) = self.0.div_mod_floor(&C::BASE);
-//         // f.write_fmt(format_args!(
-//         //     "{}{}.{:0width$}",
-//         //     C::SYMBOL,
-//         //     major,
-//         //     minor,
-//         //     width = 10,
-//         // ))?;
-//         Ok(())
-//     }
-// }
+impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safety> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let decimals = C::BASE.trailing_zeros() as usize;
+
+        // Extract major and minor using div and mod
+        let major = self.0 / C::BASE;
+        let minor = self.0 % C::BASE;
+
+        // Use write! macro to directly write to the formatter without allocation
+        write!(f, "{}.", major)?;
+
+        // Collect the minor digits into an array, and then print them in reverse order
+        let mut minor_digits = [0u8; 32]; // max size needed for U256
+        let mut minor_val = minor;
+        for i in 0..decimals {
+            let digit = minor_val % C::Backing::from(10);
+            minor_digits[decimals - 1 - i] = digit.to_u64().unwrap() as u8;
+            minor_val /= C::Backing::from(10);
+        }
+        for &digit in &minor_digits[..decimals] {
+            // we do this to avoid making any allocations
+            core::fmt::Write::write_char(f, char::from_digit(digit as u32, 10).unwrap())?;
+        }
+
+        write!(f, " {}", C::CODE)
+    }
+}
+
+impl<C: Currency, Safety: safety::Safety> core::fmt::Debug for Amount<C, Safety> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{}", self)
+    }
+}
 
 impl<C: Currency, Safety: safety::Safety> Amount<C, Safety> {
     /// Constructs an [`Amount`] from a compatible raw [`Backing`] value.
@@ -361,4 +378,19 @@ fn test_basic_ops_checked() {
     let a = Amount::<ETH, Checked>::from_raw(U256::MAX_VALUE);
     assert!((a + Amount::from_raw(U256::from(1))).is_none());
     assert!((a - Amount::from_raw(U256::from(1))).is_some());
+}
+
+#[cfg(test)]
+extern crate alloc;
+
+#[cfg(test)]
+use alloc::format;
+
+#[test]
+fn test_display() {
+    assert_eq!(ETH::BASE.trailing_zeros(), 18);
+    let a = Amount::<USD>::from_raw(124_27);
+    let b = Amount::<ETH>::from_raw(500000000_000000000000000001u128.into());
+    assert_eq!(format!("{}", a), "124.27 USD");
+    assert_eq!(format!("{}", b), "500000000.000000000000000001 ETH");
 }

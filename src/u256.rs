@@ -2,6 +2,8 @@ use core::ops::*;
 use num_integer::Integer;
 use num_traits::*;
 
+use crate::amount::TrailingZeros;
+
 /// Wraps [`primitive_types::U256`] enhancing it with some extra trait impls needed for
 /// currency manipulation.
 ///
@@ -12,6 +14,12 @@ pub struct U256(pub primitive_types::U256);
 
 impl U256 {
     pub const MAX_VALUE: U256 = U256(primitive_types::U256::MAX);
+}
+
+impl TrailingZeros for U256 {
+    fn trailing_zeros(&self) -> u32 {
+        self.0.trailing_zeros()
+    }
 }
 
 impl core::fmt::Display for U256 {
@@ -158,6 +166,12 @@ impl CheckedMul for U256 {
     }
 }
 
+impl SaturatingMul for U256 {
+    fn saturating_mul(&self, v: &Self) -> Self {
+        U256(self.0.saturating_mul(v.0))
+    }
+}
+
 impl Num for U256 {
     type FromStrRadixErr = <primitive_types::U256 as num_traits::Num>::FromStrRadixErr;
 
@@ -169,79 +183,13 @@ impl Num for U256 {
     }
 }
 
-impl From<u8> for U256 {
-    fn from(value: u8) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<u16> for U256 {
-    fn from(value: u16) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<u32> for U256 {
-    fn from(value: u32) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<u64> for U256 {
-    fn from(value: u64) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<u128> for U256 {
-    fn from(value: u128) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<i8> for U256 {
-    fn from(value: i8) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<i16> for U256 {
-    fn from(value: i16) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<i32> for U256 {
-    fn from(value: i32) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<i64> for U256 {
-    fn from(value: i64) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<i128> for U256 {
-    fn from(value: i128) -> Self {
-        U256(primitive_types::U256::from(value))
-    }
-}
-
-impl From<primitive_types::U256> for U256 {
-    fn from(value: primitive_types::U256) -> Self {
-        U256(value)
-    }
-}
-
 impl Integer for U256 {
     fn div_floor(&self, other: &Self) -> Self {
-        self.0.div(other.0).into()
+        U256(self.0.div(other.0))
     }
 
     fn mod_floor(&self, other: &Self) -> Self {
-        self.0.rem(other.0).into()
+        *self % *other
     }
 
     fn gcd(&self, other: &Self) -> Self {
@@ -282,6 +230,163 @@ impl Integer for U256 {
     }
 }
 
+impl Saturating for U256 {
+    fn saturating_add(self, v: Self) -> Self {
+        U256(self.0.saturating_add(v.0))
+    }
+
+    fn saturating_sub(self, v: Self) -> Self {
+        U256(self.0.saturating_sub(v.0))
+    }
+}
+
+impl AddAssign for U256 {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs
+    }
+}
+
+impl SubAssign for U256 {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = *self - rhs
+    }
+}
+
+impl MulAssign for U256 {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = *self * rhs
+    }
+}
+
+impl DivAssign for U256 {
+    fn div_assign(&mut self, rhs: Self) {
+        *self = *self / rhs
+    }
+}
+
+impl BitXor for U256 {
+    type Output = U256;
+
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        U256(self.0.bitxor(rhs.0))
+    }
+}
+
+impl BitOr for U256 {
+    type Output = U256;
+
+    fn bitor(self, rhs: Self) -> Self::Output {
+        U256(self.0.bitor(rhs.0))
+    }
+}
+
+impl BitAnd for U256 {
+    type Output = U256;
+
+    fn bitand(self, rhs: Self) -> Self::Output {
+        U256(self.0.bitand(rhs.0))
+    }
+}
+
+impl Not for U256 {
+    type Output = U256;
+
+    fn not(self) -> Self::Output {
+        U256(self.0.not())
+    }
+}
+
+impl Bounded for U256 {
+    fn min_value() -> Self {
+        Self::zero()
+    }
+
+    fn max_value() -> Self {
+        Self::MAX_VALUE
+    }
+}
+
+impl From<u8> for U256 {
+    fn from(value: u8) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<u16> for U256 {
+    fn from(value: u16) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<u32> for U256 {
+    fn from(value: u32) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<u64> for U256 {
+    fn from(value: u64) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<u128> for U256 {
+    fn from(value: u128) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<i8> for U256 {
+    fn from(value: i8) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<i16> for U256 {
+    fn from(value: i16) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<i32> for U256 {
+    fn from(value: i32) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<i64> for U256 {
+    fn from(value: i64) -> Self {
+        U256(value.into())
+    }
+}
+
+impl From<i128> for U256 {
+    fn from(value: i128) -> Self {
+        U256(value.into())
+    }
+}
+
+impl ToPrimitive for U256 {
+    fn to_i64(&self) -> Option<i64> {
+        // Check if it can fit into i64 range.
+        if self.0 <= primitive_types::U256::from(i64::MAX as u64) {
+            Some(self.0.low_u64() as i64)
+        } else {
+            None
+        }
+    }
+
+    fn to_u64(&self) -> Option<u64> {
+        // As U256::low_u64 returns only the least significant 64 bits,
+        // we need to check that the higher bits are all zero.
+        if self.0 >> 64 == primitive_types::U256::zero() {
+            Some(self.0.low_u64())
+        } else {
+            None
+        }
+    }
+}
+
 #[cfg(test)]
 extern crate alloc;
 
@@ -290,7 +395,7 @@ use alloc::format;
 
 #[test]
 fn test_mod_and_is_zero() {
-    let a: U256 = 20.into();
+    let a: U256 = U256::from(20);
     let b: U256 = 4.into();
 
     assert_eq!(a % b, U256::zero());
@@ -395,6 +500,17 @@ fn test_modulo_operation() {
 }
 
 #[test]
+fn test_div_mod_floor() {
+    let a = U256::from(105u64);
+    let b = U256::from(4u64);
+
+    let (quotient, remainder) = a.div_mod_floor(&b);
+
+    assert_eq!(quotient, U256::from(26u64)); // 105 / 4 = 26
+    assert_eq!(remainder, U256::from(1u64)); // 105 % 4 = 1
+}
+
+#[test]
 fn test_display() {
     assert_eq!(format!("{}", U256::from(267)), "267");
 }
@@ -402,4 +518,71 @@ fn test_display() {
 #[test]
 fn test_debug() {
     assert_eq!(format!("{:?}", U256::from(1337)), "1337");
+}
+
+#[test]
+fn test_addition_with_max_value() {
+    let max_val = U256::MAX_VALUE;
+    let one = U256::from(1);
+    assert_eq!(max_val.saturating_add(one), U256::MAX_VALUE);
+}
+
+#[test]
+fn test_subtraction_with_min_value() {
+    let min_val = U256::zero();
+    let one = U256::from(1);
+    assert_eq!(min_val.saturating_sub(one), U256::zero());
+}
+
+#[test]
+fn test_multiplication_with_max_value() {
+    let max_val = U256::MAX_VALUE;
+    let two = U256::from(2);
+    assert_eq!(max_val.saturating_mul(&two), U256::MAX_VALUE);
+}
+
+#[test]
+fn test_division_with_min_value() {
+    let min_val = U256::zero();
+    let two = U256::from(2);
+    assert_eq!(min_val / two, U256::zero()); // Division by 2 of 0 remains 0; no change needed.
+}
+
+#[test]
+fn test_bit_operations() {
+    let max_val = U256::MAX_VALUE;
+    let min_val = U256::zero();
+
+    // Bitwise AND with MAX_VALUE should return the other operand
+    assert_eq!(max_val & U256::from(12345), U256::from(12345));
+
+    // Bitwise AND with zero should return zero
+    assert_eq!(min_val & U256::from(12345), U256::zero());
+
+    // Bitwise OR with MAX_VALUE should return MAX_VALUE
+    assert_eq!(max_val | U256::from(12345), U256::MAX_VALUE);
+
+    // Bitwise OR with zero should return the other operand
+    assert_eq!(min_val | U256::from(12345), U256::from(12345));
+
+    // Bitwise NOT of zero should return MAX_VALUE
+    assert_eq!(!min_val, U256::MAX_VALUE);
+
+    // Bitwise NOT of MAX_VALUE should return zero
+    assert_eq!(!max_val, U256::zero());
+}
+
+#[test]
+fn test_div_mod_floor_extended() {
+    // Assuming you have U256 type in scope.
+
+    let base: U256 = U256::from(1_000_000_000_000_000_000u128); // This represents a BASE value similar to the one you might use for ETH.
+
+    // Use a number slightly bigger than the BASE.
+    let value = base + U256::from(123_456_789_123_456_789u128);
+
+    let (quotient, remainder) = value.div_mod_floor(&base);
+
+    assert_eq!(quotient, U256::from(1)); // This should be 1 because value is just 1 BASE + some remainder.
+    assert_eq!(remainder, U256::from(123_456_789_123_456_789u128));
 }
