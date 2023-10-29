@@ -25,12 +25,12 @@ impl Default for FormatStyle {
 pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::hash::Hash {
     /// Represents the underlying (signed or un-signed) primitive integer type used to
     /// represent [`Amount`]s of this [`Currency`].
-    type Base: Base;
+    type Backing: Backing;
 
     /// Determines the number of supported fractional decimal digits that will be supported by
     /// an [`Amount`] of this [`Currency`] (a value of 0 means only integers can be
     /// represented). This is also the position of the decimal point from the RHS of the
-    /// underlying [`Base`].
+    /// underlying [`Backing`].
     const FRAC_DIGITS: usize;
 
     /// Specifies a 3-4 digit acronym or "code" that can be used as a short name for this
@@ -73,12 +73,6 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     /// This is provided separately from `IS_ISO` to prepare for a future where one or more
     /// cryptocurrencies are included in ISO-4217.
     const IS_CRYPTO: bool;
-
-    /// Returns 10 raised to [`Self::FRAC_DIGITS`], which can be used with `div_mod` to
-    /// determine the fraction and integer part of an [`Amount`] of this [`Currency`]
-    fn frac_base() -> Self::Base {
-        Self::Base::pow(&Self::Base::from(10u8), Self::FRAC_DIGITS)
-    }
 }
 
 macro_rules! define_currency {
@@ -96,7 +90,7 @@ macro_rules! define_currency {
         pub struct $currency_name;
 
         impl $crate::currency::Currency for $currency_name {
-            type Base = $base_type;
+            type Backing = $base_type;
             const FRAC_DIGITS: usize = $frac_digits;
             const CODE: &'static str = stringify!($currency_name);
             const SYMBOL: &'static str = $symbol;
@@ -111,11 +105,3 @@ macro_rules! define_currency {
 define_currency!(USD, u64, 2, "$", "United States Dollar", PrefixAttached, true, false);
 define_currency!(ETH, U256, 18, "ETH", "Ethereum", SuffixSpaced, false, true);
 define_currency!(BTC, u64, 8, "BTC", "Bitcoin", SuffixSpaced, false, true);
-
-
-#[test]
-fn test_frac_base() {
-    assert_eq!(USD::frac_base(), 100);
-    assert_eq!(BTC::frac_base(), 100000000);
-    assert_eq!(ETH::frac_base(), 1000000000000000000u64.into());
-}

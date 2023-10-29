@@ -16,7 +16,7 @@ pub use primitive_types::{U256, U512};
 ///
 /// Must be [`Unsigned`] and implement common [`num_traits`] and basic [`core::ops`] traits
 /// (see bounds).
-pub trait Base:
+pub trait Backing:
     Num
     + Unsigned
     + Zero
@@ -105,21 +105,21 @@ impl<
             + From<u8>
             + From<u16>
             + From<u32>,
-    > Base for T
+    > Backing for T
 {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
-    C::Base,
+    C::Backing,
     PhantomData<C>,
     PhantomData<Safety>,
 );
 
 impl<C: Currency, Safety: safety::Safety> Amount<C, Safety> {
-    /// Constructs an [`Amount`] from a compatible raw [`Base`] value.
+    /// Constructs an [`Amount`] from a compatible raw [`Backing`] value.
     #[inline]
-    pub const fn from_raw(amount: C::Base) -> Self {
+    pub const fn from_raw(amount: C::Backing) -> Self {
         Amount(amount, PhantomData, PhantomData)
     }
 }
@@ -133,7 +133,7 @@ impl<C: Currency, Safety: safety::Safety> Rem for Amount<C, Safety> {
 }
 
 impl<C: Currency> Div for Amount<C, Unchecked> {
-    type Output = C::Base;
+    type Output = C::Backing;
 
     fn div(self, rhs: Self) -> Self::Output {
         self.0.div(rhs.0)
@@ -141,7 +141,7 @@ impl<C: Currency> Div for Amount<C, Unchecked> {
 }
 
 impl<C: Currency> Div for Amount<C, Checked> {
-    type Output = Option<C::Base>;
+    type Output = Option<C::Backing>;
 
     fn div(self, rhs: Self) -> Self::Output {
         self.0.checked_div(&rhs.0)
@@ -219,67 +219,67 @@ impl<C: Currency> Mul for Amount<C, Checked> {
 
 impl<C: Currency> Mul<u8> for Amount<C, Unchecked>
 where
-    C::Base: FromPrimitive,
+    C::Backing: FromPrimitive,
 {
     type Output = Self;
 
     fn mul(self, rhs: u8) -> Self::Output {
-        Self::from_raw(self.0.mul(C::Base::from_u8(rhs).unwrap()))
+        Self::from_raw(self.0.mul(C::Backing::from_u8(rhs).unwrap()))
     }
 }
 
 impl<C: Currency> Mul<u16> for Amount<C, Unchecked>
 where
-    C::Base: FromPrimitive,
+    C::Backing: FromPrimitive,
 {
     type Output = Self;
 
     fn mul(self, rhs: u16) -> Self::Output {
-        Self::from_raw(self.0.mul(C::Base::from_u16(rhs).unwrap()))
+        Self::from_raw(self.0.mul(C::Backing::from_u16(rhs).unwrap()))
     }
 }
 
 impl<C: Currency> Mul<u32> for Amount<C, Unchecked>
 where
-    C::Base: FromPrimitive,
+    C::Backing: FromPrimitive,
 {
     type Output = Self;
 
     fn mul(self, rhs: u32) -> Self::Output {
-        Self::from_raw(self.0.mul(C::Base::from_u32(rhs).unwrap()))
+        Self::from_raw(self.0.mul(C::Backing::from_u32(rhs).unwrap()))
     }
 }
 
 impl<C: Currency> Mul<u64> for Amount<C, Unchecked>
 where
-    C::Base: FromPrimitive,
+    C::Backing: FromPrimitive,
 {
     type Output = Self;
 
     fn mul(self, rhs: u64) -> Self::Output {
-        Self::from_raw(self.0.mul(C::Base::from_u64(rhs).unwrap()))
+        Self::from_raw(self.0.mul(C::Backing::from_u64(rhs).unwrap()))
     }
 }
 
 impl<C: Currency> Mul<u128> for Amount<C, Unchecked>
 where
-    C::Base: FromPrimitive,
+    C::Backing: FromPrimitive,
 {
     type Output = Self;
 
     fn mul(self, rhs: u128) -> Self::Output {
-        Self::from_raw(self.0.mul(C::Base::from_u128(rhs).unwrap()))
+        Self::from_raw(self.0.mul(C::Backing::from_u128(rhs).unwrap()))
     }
 }
 
 impl<C: Currency> Mul<usize> for Amount<C, Unchecked>
 where
-    C::Base: FromPrimitive,
+    C::Backing: FromPrimitive,
 {
     type Output = Self;
 
     fn mul(self, rhs: usize) -> Self::Output {
-        Self::from_raw(self.0.mul(C::Base::from_usize(rhs).unwrap()))
+        Self::from_raw(self.0.mul(C::Backing::from_usize(rhs).unwrap()))
     }
 }
 
@@ -291,13 +291,13 @@ impl<C: Currency> MulAssign for Amount<C, Unchecked> {
 
 impl<C: Currency> One for Amount<C, Unchecked> {
     fn one() -> Self {
-        Self::from_raw(<C as Currency>::Base::one())
+        Self::from_raw(<C as Currency>::Backing::one())
     }
 }
 
 impl<C: Currency> Zero for Amount<C, Unchecked> {
     fn zero() -> Self {
-        Self::from_raw(<C as Currency>::Base::zero())
+        Self::from_raw(<C as Currency>::Backing::zero())
     }
 
     fn is_zero(&self) -> bool {
