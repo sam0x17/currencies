@@ -115,6 +115,13 @@ impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safet
         let major = self.0 / C::BASE;
         let minor = self.0 % C::BASE;
 
+        // handle formatting for prefix-style currencies
+        match C::STYLE {
+            FormatStyle::PrefixAttached => write!(f, "{}", C::SYMBOL)?,
+            FormatStyle::PrefixSpaced => write!(f, "{} ", C::SYMBOL)?,
+            _ => (),
+        }
+
         // avoids allocation
         write!(f, "{}.", major)?;
 
@@ -131,7 +138,14 @@ impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safet
             core::fmt::Write::write_char(f, char::from_digit(digit as u32, 10).unwrap())?;
         }
 
-        write!(f, " {}", C::CODE)
+        // handle formatting for suffix-style currencies
+        match C::STYLE {
+            FormatStyle::SuffixAttached => write!(f, "{}", C::SYMBOL)?,
+            FormatStyle::SuffixSpaced => write!(f, " {}", C::SYMBOL)?,
+            _ => (),
+        }
+
+        Ok(())
     }
 }
 
@@ -390,6 +404,8 @@ fn test_display() {
     assert_eq!(ETH::BASE.trailing_zeros(), 18);
     let a = Amount::<USD>::from_raw(124_27);
     let b = Amount::<ETH>::from_raw(500000000_000000000000000001u128.into());
-    assert_eq!(format!("{}", a), "124.27 USD");
+    let c = Amount::<AUD>::from_raw(365000000_23);
+    assert_eq!(format!("{}", a), "$124.27");
     assert_eq!(format!("{}", b), "500000000.000000000000000001 ETH");
+    assert_eq!(format!("{}", c), "365000000.23 AUD");
 }
