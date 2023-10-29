@@ -48,7 +48,7 @@ fn show_off_checked_math() {
     // When using currency amounts with `Safety = Checked`, the Amount struct has been specially set
     // up so that only checked math will be allowed, and you can still use the normal
     // operator-based syntax. Thus currency amounts like this should never panic and are
-    // suitable for use in smart contracts.
+    // suitable for use in critical/infallible environments.
 
     let drink_cost = Amount::<USD, Checked>::from_raw(6_29);
     let movie_cost = Amount::<USD, Checked>::from_raw(24_99);
