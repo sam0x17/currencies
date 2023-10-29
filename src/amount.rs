@@ -41,7 +41,40 @@ pub trait Base:
     + Clone
     + core::hash::Hash
     + core::fmt::Debug
+    + From<u8>
+    + From<u16>
+    + From<u32>
 {
+    fn pow(&self, exp: usize) -> Self {
+        let mut base = *self;
+        let mut acc: Self = One::one();
+        let mut exp = exp;
+
+        while exp > 0 {
+            if (exp & 1) == 1 {
+                acc = acc * base;
+            }
+            base = base * base;
+            exp >>= 1;
+        }
+
+        acc
+    }
+
+    fn checked_pow(&self, mut exp: usize) -> Option<Self> {
+        let mut base = *self;
+        let mut acc: Self = One::one();
+
+        while exp > 0 {
+            if (exp & 1) == 1 {
+                acc = acc.checked_mul(&base)?;
+            }
+            base = base.checked_mul(&base)?;
+            exp >>= 1;
+        }
+
+        Some(acc)
+    }
 }
 
 impl<
@@ -68,7 +101,10 @@ impl<
             + Copy
             + Clone
             + core::hash::Hash
-            + core::fmt::Debug,
+            + core::fmt::Debug
+            + From<u8>
+            + From<u16>
+            + From<u32>,
     > Base for T
 {
 }

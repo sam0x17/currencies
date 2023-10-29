@@ -73,8 +73,13 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     /// This is provided separately from `IS_ISO` to prepare for a future where one or more
     /// cryptocurrencies are included in ISO-4217.
     const IS_CRYPTO: bool;
-}
 
+    /// Returns 10 raised to [`Self::FRAC_DIGITS`], which can be used with `div_mod` to
+    /// determine the fraction and integer part of an [`Amount`] of this [`Currency`]
+    fn frac_base() -> Self::Base {
+        Self::Base::pow(&Self::Base::from(10u8), Self::FRAC_DIGITS)
+    }
+}
 
 macro_rules! define_currency {
     (
@@ -106,3 +111,11 @@ macro_rules! define_currency {
 define_currency!(USD, u64, 2, "$", "United States Dollar", PrefixAttached, true, false);
 define_currency!(ETH, U256, 18, "ETH", "Ethereum", SuffixSpaced, false, true);
 define_currency!(BTC, u64, 8, "BTC", "Bitcoin", SuffixSpaced, false, true);
+
+
+#[test]
+fn test_frac_base() {
+    assert_eq!(USD::frac_base(), 100);
+    assert_eq!(BTC::frac_base(), 100000000);
+    assert_eq!(ETH::frac_base(), 1000000000000000000u64.into());
+}
