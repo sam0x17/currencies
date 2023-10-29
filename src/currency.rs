@@ -1,4 +1,5 @@
-//! Home of the [`Currency`] trait, the [`define_currency`] macro, and related/supporting types.
+//! Home of the [`Currency`] trait, the [`define_currency!`](`crate::define_currency`) macro,
+//! and related/supporting types.
 //! 
 //! Individual currencies such as [`USD`], [`BTC`], [`ETH`], [`AUD`], etc, can also be found here.
 //! 
@@ -91,6 +92,34 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
 }
 
 /// Shorthand for defining a new [`Currency`]. All ISO-4217 currencies already have an entry.
+/// 
+/// Example:
+/// 
+/// ```ignore
+/// define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
+/// ````
+/// 
+/// where:
+/// - the first argument should be an ident specifying the (programmatic and short-hand) name
+///   of the currency
+/// - the second argument specifies the "backing" type used  to store [`Amount`]s of this
+///   [`Currency`].
+/// - the third argument should be an expression resolving to a number that specifies the
+///   underlying base of this [`Currency`]. Typically this is a `1` followed by a number of
+///   zeroes exactly corresponding with the number of digits this [`Currency`] will support
+///   after the decimal point.
+/// - the fourth argument should be a string literal such as "$" or "ETH" specifying the
+///   _symbol_ that will be used when working with [`Amount`]s of this [`Currency`].
+/// - the fifth argument should be a string literal containing a verbose/proper name for this
+///   [`Currency`] such as "United States Dollar".
+/// - the sixth argument should be a variant name from [`FormatStyle`], minus the leading
+///   `FormatStyle::` portion, as that is implied, and determines how [`Amount`]s of this
+///   [`Currency`] should be displayed.
+/// - the seventh argument should be a boolean expression specifying whether or not this
+///   [`Currency`] is part of ISO-4217.
+/// - the eighth and final argument should be a boolean expression specifying whether or not
+///   this [`Currency`] is a cryptocurrency.
+#[macro_export]
 macro_rules! define_currency {
     (
         $currency_name:ident, 

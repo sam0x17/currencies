@@ -1,4 +1,4 @@
-///! Home of the [`Safety`] sealed type and its two variants [`Checked`] and [`Unchecked`].
+//! Home of the `Safety` sealed type and its two variants [`Checked`] and [`Unchecked`].
 
 /// Enforces using only checked arithmetic operations with this [`Amount`](`crate::Amount`).
 ///

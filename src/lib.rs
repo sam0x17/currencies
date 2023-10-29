@@ -1,3 +1,11 @@
+//! This crate allows for generic manipulation of currencies (both real-world and
+//! cryptocurrencies) via the [`Amount`] struct and the [`Currency`] trait.
+//!
+//! The [`Amount`] struct is able to represent arbitrary amounts of any supported [`Currency`]
+//! with the ability to restrict the underlying currencies at compile-time to only allow
+//! checked arithmetic operations and requires consuming an [`Option`] in all fallible
+//! circumstances.
+
 #![no_std]
 #![warn(missing_docs)]
 
