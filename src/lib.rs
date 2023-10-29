@@ -30,3 +30,21 @@ fn show_off_currency_math() {
     total *= Amount::from_raw(2_000000000000000000u64.into());
     assert_eq!(format!("{}", total), "11524487968.200000000000000008 AAVE");
 }
+
+#[test]
+fn show_off_checked_math() {
+    use currency::*;
+    use safety::*;
+
+    // When using currency amounts with `Safety = Checked`, the Amount struct has been specially set
+    // up so that only checked math will be allowed, and you can still use the normal
+    // operator-based syntax. Thus currency amounts like this should never panic and are
+    // suitable for use in smart contracts.
+
+    let drink_cost = Amount::<USD, Checked>::from_raw(6_29);
+    let movie_cost = Amount::<USD, Checked>::from_raw(24_99);
+    let Some(outing_cost) = drink_cost + movie_cost else {
+        unimplemented!("compiler forces you to handle this!")
+    };
+    assert_eq!(format!("{}", outing_cost), "$31.28");
+}
