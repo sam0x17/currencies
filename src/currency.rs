@@ -105,4 +105,4 @@ macro_rules! define_currency {
 
 define_currency!(USD, u64, 2, "$", "United States Dollar", PrefixAttached, true, false);
 define_currency!(ETH, U256, 18, "ETH", "Ethereum", SuffixSpaced, false, true);
-define_currency!(BTC, U256, 8, "BTC", "Bitcoin", SuffixSpaced, false, true);
+define_currency!(BTC, u64, 8, "BTC", "Bitcoin", SuffixSpaced, false, true);
