@@ -27,11 +27,14 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     /// represent [`Amount`]s of this [`Currency`].
     type Backing: Backing;
 
-    /// Determines the number of supported fractional decimal digits that will be supported by
-    /// an [`Amount`] of this [`Currency`] (a value of 0 means only integers can be
-    /// represented). This is also the position of the decimal point from the RHS of the
-    /// underlying [`Backing`].
-    const FRAC_DIGITS: usize;
+    /// Determines the numerical base of an [`Amount`] of this [`Currency`].
+    /// 
+    /// For base ten currencies, this should be a `1` followed by a number of zeroes
+    /// corresponding with the number of supported digits to the right of the decimal place.
+    /// 
+    /// Some very rare currencies use a base other than 10, such as Malagasy ariary. For these
+    /// you should use an appropriate base.
+    const BASE: Self::Backing;
 
     /// Specifies a 3-4 digit acronym or "code" that can be used as a short name for this
     /// [`Currency`]. For ISO-supported currencies, this will be equal to the ISO-4217
@@ -79,7 +82,7 @@ macro_rules! define_currency {
     (
         $currency_name:ident, 
         $base_type:ty, 
-        $frac_digits:expr, 
+        $base:expr, 
         $symbol:expr, 
         $proper_name:expr, 
         $style:ident,
@@ -91,7 +94,7 @@ macro_rules! define_currency {
 
         impl $crate::currency::Currency for $currency_name {
             type Backing = $base_type;
-            const FRAC_DIGITS: usize = $frac_digits;
+            const BASE: Self::Backing = $base;
             const CODE: &'static str = stringify!($currency_name);
             const SYMBOL: &'static str = $symbol;
             const PROPER_NAME: &'static str = $proper_name;
@@ -102,6 +105,12 @@ macro_rules! define_currency {
     };
 }
 
-define_currency!(USD, u64, 2, "$", "United States Dollar", PrefixAttached, true, false);
-define_currency!(ETH, U256, 18, "ETH", "Ethereum", SuffixSpaced, false, true);
-define_currency!(BTC, u64, 8, "BTC", "Bitcoin", SuffixSpaced, false, true);
+/// Const function capable of constructing a [`U256`] from a [`u64`], useful for specifying
+/// [`Currency::BASE`] for currencies have a [`Currency::Backing`] set to [`U256`].
+pub const fn u64_to_u256(n: u64) -> U256 {
+    U256([n, 0, 0, 0])
+}
+
+define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
+define_currency!(ETH, U256, u64_to_u256(1_000000000000000000), "ETH", "Ethereum", SuffixSpaced, false, true);
+define_currency!(BTC, u64, 1_00000000, "BTC", "Bitcoin", SuffixSpaced, false, true);
