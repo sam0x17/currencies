@@ -407,5 +407,5 @@ fn test_display() {
     let c = Amount::<AUD>::from_raw(365000000_23);
     assert_eq!(format!("{}", a), "$124.27");
     assert_eq!(format!("{}", b), "500000000.000000000000000001 ETH");
-    assert_eq!(format!("{}", c), "365000000.23 AUD");
+    assert_eq!(format!("{}", c), "$365000000.23");
 }
