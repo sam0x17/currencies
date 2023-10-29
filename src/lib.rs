@@ -1,4 +1,5 @@
 #![no_std]
+#![warn(missing_docs)]
 
 pub mod amount;
 pub use amount::{Amount, Backing};
