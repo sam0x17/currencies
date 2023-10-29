@@ -1,7 +1,6 @@
-//! Home of the [`Currency`] trait, the [`define_currency!`](`crate::define_currency`) macro,
-//! and related/supporting types.
-//! 
-//! Individual currencies such as [`USD`], [`BTC`], [`ETH`], [`AUD`], etc, can also be found here.
+//! Home of the [`Currency`] trait, all built-in currencies such as [`USD`], [`AAVE`], [`ETH`],
+//! etc., the [`define_currency!`](`crate::define_currency`) macro, and related/supporting
+//! types.
 //! 
 //! All representable currencies from the ISO-4217 list are included here, as well as several
 //! cryptocurrencies.
