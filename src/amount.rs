@@ -112,15 +112,14 @@ impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safet
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let decimals = C::BASE.trailing_zeros() as usize;
 
-        // Extract major and minor using div and mod
         let major = self.0 / C::BASE;
         let minor = self.0 % C::BASE;
 
-        // Use write! macro to directly write to the formatter without allocation
+        // avoids allocation
         write!(f, "{}.", major)?;
 
         // Collect the minor digits into an array, and then print them in reverse order
-        let mut minor_digits = [0u8; 32]; // max size needed for U256
+        let mut minor_digits = [0u8; 64]; // HACK: max size needed for a U512, increase this to support larger types
         let mut minor_val = minor;
         for i in 0..decimals {
             let digit = minor_val % C::Backing::from(10);
@@ -128,7 +127,7 @@ impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safet
             minor_val /= C::Backing::from(10);
         }
         for &digit in &minor_digits[..decimals] {
-            // we do this to avoid making any allocations
+            // avoids allocation
             core::fmt::Write::write_char(f, char::from_digit(digit as u32, 10).unwrap())?;
         }
 
