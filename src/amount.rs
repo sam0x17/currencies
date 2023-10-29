@@ -1,4 +1,3 @@
-use crate::u256::U256;
 use core::{
     marker::PhantomData,
     ops::{Add, AddAssign, Div, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
@@ -21,7 +20,7 @@ pub trait Backing:
     + Unsigned
     + Zero
     + One
-    // + Integer
+    + Integer
     + CheckedAdd
     + CheckedSub
     + CheckedDiv
@@ -80,7 +79,7 @@ impl<
             + Unsigned
             + Zero
             + One
-            // + Integer
+            + Integer
             + CheckedAdd
             + CheckedSub
             + CheckedDiv
@@ -314,6 +313,9 @@ impl<C: Currency> Zero for Amount<C, Unchecked> {
         self.0.is_zero()
     }
 }
+
+#[cfg(test)]
+use crate::*;
 
 #[test]
 fn test_from_raw() {
