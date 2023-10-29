@@ -249,10 +249,9 @@ impl<C: Currency> Mul for Amount<C, Checked> {
     type Output = Option<Self>;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        match self.0.checked_mul(&rhs.0) {
-            Some(res) => Some(Self::from_raw(res)),
-            None => None,
-        }
+        Some(Self::from_raw(
+            self.0.checked_mul(&rhs.0)?.checked_div(&C::BASE)?,
+        ))
     }
 }
 
@@ -319,6 +318,17 @@ where
 
     fn mul(self, rhs: usize) -> Self::Output {
         Self::from_raw(self.0.mul(C::Backing::from_usize(rhs).unwrap()))
+    }
+}
+
+impl<C: Currency> Mul<i32> for Amount<C, Unchecked>
+where
+    C::Backing: FromPrimitive,
+{
+    type Output = Self;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        Self::from_raw(self.0.mul(C::Backing::from_i32(rhs).unwrap()))
     }
 }
 

@@ -23,6 +23,7 @@ fn show_off_currency_math() {
     assert!(apple_cost < orange_cost);
     assert!(apple_cost + orange_cost > orange_cost);
     assert_eq!(format!("{}", apple_cost * orange_cost), "$25.82");
+    assert_eq!(format!("{}", apple_cost * 3), "$9.72");
 
     let mut total = Amount::<AAVE>::from_raw(5762244984_100000000000000004u128.into());
     total -= Amount::from_raw(1000_000000000000000000u128.into());
