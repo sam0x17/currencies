@@ -1,3 +1,7 @@
+//! Home of the [`U256`] type, which is a heavily modified, wrapped version of
+//! [`primitive_types::U256`] with several custom impls and additional traits from
+//! [`num_traits`] that are necessary for currency manipulation but not included by default.
+
 use core::ops::*;
 use num_integer::Integer;
 use num_traits::*;
@@ -13,6 +17,7 @@ use crate::amount::TrailingZeros;
 pub struct U256(pub primitive_types::U256);
 
 impl U256 {
+    /// Specifies the maximum representable value for this [`U256`].
     pub const MAX_VALUE: U256 = U256(primitive_types::U256::MAX);
 }
 
