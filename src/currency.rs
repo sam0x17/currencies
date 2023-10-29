@@ -107,9 +107,12 @@ macro_rules! define_currency {
     };
 }
 
-
-define_currency!(ETH, U256, u64_to_u256(1_000000000000000000), "ETH", "Ethereum", SuffixSpaced, false, true);
 define_currency!(BTC, u64, 1_00000000, "BTC", "Bitcoin", SuffixSpaced, false, true);
+define_currency!(ETH, U256, u64_to_u256(1_000000000000000000), "ETH", "Ethereum", SuffixSpaced, false, true);
+define_currency!(AAVE, U256, ETH::BASE, "AAVE", "Aave Token", SuffixSpaced, false, true);
+
+define_currency!(DOT, u128, 10000000000u128, "DOT", "Polkadot", SuffixSpaced, false, true);
+define_currency!(KSM, u128, 1000000000000u128, "KSM", "Kusama", SuffixSpaced, false, true);
 
 define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
 define_currency!(BAM, u64, 1_00, "KM", "Bosnia and Herzegovina Convertible Mark", SuffixSpaced, true, false);

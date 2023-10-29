@@ -405,7 +405,11 @@ fn test_display() {
     let a = Amount::<USD>::from_raw(124_27);
     let b = Amount::<ETH>::from_raw(500000000_000000000000000001u128.into());
     let c = Amount::<AUD>::from_raw(365000000_23);
+    let d = Amount::<DOT>::from_raw(457_0000000003);
+    let e = Amount::<KSM>::from_raw(249879873_700000000004);
     assert_eq!(format!("{}", a), "$124.27");
     assert_eq!(format!("{}", b), "500000000.000000000000000001 ETH");
     assert_eq!(format!("{}", c), "$365000000.23");
+    assert_eq!(format!("{}", d), "457.0000000003 DOT");
+    assert_eq!(format!("{}", e), "249879873.700000000004 KSM");
 }
