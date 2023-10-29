@@ -241,7 +241,7 @@ impl<C: Currency> Mul for Amount<C, Unchecked> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::from_raw(self.0.mul(rhs.0))
+        Self::from_raw(self.0 * rhs.0 / C::BASE)
     }
 }
 
@@ -364,7 +364,7 @@ fn test_basic_ops_unchecked() {
     let b = Amount::<USD>::from_raw(50_00);
     assert!(a + b == Amount::from_raw(150_00));
     assert!(a / b == 2);
-    assert!(a * b == Amount::from_raw(500000_00));
+    assert!(a * b == Amount::from_raw(5000_00));
     let mut c = a;
     c += b;
     assert!(c == Amount::from_raw(150_00));
