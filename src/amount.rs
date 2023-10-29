@@ -107,14 +107,14 @@ impl<T: PrimInt> TrailingZeros for T {
 
 /// Generically represents an amount of a specified [`Currency`].
 ///
-/// Setting [`Safety`] to [`Unchecked`] will allow for full use of all supported math
+/// Setting `Self::Safety` to [`Unchecked`] will allow for full use of all supported math
 /// operators, but allows for things like overflowing, division by zero, that can lead to
 /// panics during runtime.
 ///
-/// Setting [`Safety`] to [`Checked`] replaces basic arithmetic operators with their checked
-/// counterparts that can never panic but typically return an [`Option`] or [`Result`] that
-/// must be used. This should make usages of this [`Amount`] 100% safe to use in situations
-/// where panicking is dangerous.
+/// Setting `Self::Safety` to [`Checked`] replaces basic arithmetic operators with their
+/// checked counterparts that can never panic but typically return an [`Option`] or [`Result`]
+/// that must be used. This should make usages of this [`Amount`] 100% safe to use in
+/// situations where panicking is dangerous.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
     C::Backing,

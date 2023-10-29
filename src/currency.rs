@@ -1,6 +1,17 @@
+//! Home of the [`Currency`] trait, the [`define_currency`] macro, and related/supporting types.
+//! 
+//! Individual currencies such as [`USD`], [`BTC`], [`ETH`], [`AUD`], etc, can also be found here.
+//! 
+//! All representable currencies from the ISO-4217 list are included here, as well as several
+//! cryptocurrencies.
+
 use crate::amount::*;
 use crate::u256::{U256, u64_to_u256};
 
+/// Determines how an [`Amount`] in this [`Currency`] should be displayed when it is sent to a
+/// [`core::fmt::Debug`] or [`core::fmt::Display`] impl.
+/// 
+/// See individual variants for a concise description.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub enum FormatStyle {
     /// Specifies that the symbol should prefix the amount with no space, like "$40.00". Common
@@ -79,6 +90,7 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     const IS_CRYPTO: bool;
 }
 
+/// Shorthand for defining a new [`Currency`]. All ISO-4217 currencies already have an entry.
 macro_rules! define_currency {
     (
         $currency_name:ident, 
