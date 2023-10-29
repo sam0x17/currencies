@@ -89,6 +89,7 @@ macro_rules! define_currency {
         $is_iso:expr, 
         $is_crypto:expr
     ) => {
+        #[doc = concat!($proper_name, " (", $symbol, ")")]
         #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
         pub struct $currency_name;
 
@@ -111,11 +112,11 @@ pub const fn u64_to_u256(n: u64) -> U256 {
     U256([n, 0, 0, 0])
 }
 
-define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
+
 define_currency!(ETH, U256, u64_to_u256(1_000000000000000000), "ETH", "Ethereum", SuffixSpaced, false, true);
 define_currency!(BTC, u64, 1_00000000, "BTC", "Bitcoin", SuffixSpaced, false, true);
 
-
+define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
 define_currency!(BAM, u64, 1_00, "KM", "Bosnia and Herzegovina Convertible Mark", SuffixSpaced, true, false);
 define_currency!(AED, u64, 1_00, "Dh", "United Arab Emirates Dirham", SuffixSpaced, true, false);
 define_currency!(AFN, u64, 1_00, "Af", "Afgan Afghani", SuffixSpaced, true, false);
