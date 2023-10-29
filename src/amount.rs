@@ -1,15 +1,15 @@
+use crate::u256::U256;
 use core::{
     marker::PhantomData,
     ops::{Add, AddAssign, Div, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
 };
+use num_integer::Integer;
 use num_traits::{
     CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, Unsigned, Zero,
 };
 
 use crate::currency::*;
 use crate::safety::{self, *};
-
-pub use primitive_types::{U256, U512};
 
 /// Automatically implemented on types capable of being used as the "base" / backing type for
 /// an [`Amount`] of [`Currency`].
@@ -21,6 +21,7 @@ pub trait Backing:
     + Unsigned
     + Zero
     + One
+    // + Integer
     + CheckedAdd
     + CheckedSub
     + CheckedDiv
@@ -41,9 +42,6 @@ pub trait Backing:
     + Clone
     + core::hash::Hash
     + core::fmt::Debug
-    + From<u8>
-    + From<u16>
-    + From<u32>
 {
     fn pow(&self, exp: usize) -> Self {
         let mut base = *self;
@@ -82,6 +80,7 @@ impl<
             + Unsigned
             + Zero
             + One
+            // + Integer
             + CheckedAdd
             + CheckedSub
             + CheckedDiv
@@ -101,10 +100,7 @@ impl<
             + Copy
             + Clone
             + core::hash::Hash
-            + core::fmt::Debug
-            + From<u8>
-            + From<u16>
-            + From<u32>,
+            + core::fmt::Debug,
     > Backing for T
 {
 }
@@ -115,6 +111,20 @@ pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
     PhantomData<C>,
     PhantomData<Safety>,
 );
+
+// impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safety> {
+//     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+//         let (major, minor) = self.0.div_mod_floor(&C::BASE);
+//         // f.write_fmt(format_args!(
+//         //     "{}{}.{:0width$}",
+//         //     C::SYMBOL,
+//         //     major,
+//         //     minor,
+//         //     width = 10,
+//         // ))?;
+//         Ok(())
+//     }
+// }
 
 impl<C: Currency, Safety: safety::Safety> Amount<C, Safety> {
     /// Constructs an [`Amount`] from a compatible raw [`Backing`] value.
@@ -346,7 +356,7 @@ fn test_basic_ops_checked() {
     assert!((a / b).unwrap() == 0);
     assert!((b / a).unwrap() == 7);
     assert!((a / Amount::from_raw(0)).is_none());
-    let a = Amount::<ETH, Checked>::from_raw(U256::max_value());
+    let a = Amount::<ETH, Checked>::from_raw(U256::MAX_VALUE);
     assert!((a + Amount::from_raw(U256::from(1))).is_none());
     assert!((a - Amount::from_raw(U256::from(1))).is_some());
 }

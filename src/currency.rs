@@ -1,4 +1,5 @@
 use crate::amount::*;
+use crate::u256::{U256, u64_to_u256};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub enum FormatStyle {
@@ -104,12 +105,6 @@ macro_rules! define_currency {
             const IS_CRYPTO: bool = $is_crypto;
         }
     };
-}
-
-/// Const function capable of constructing a [`U256`] from a [`u64`], useful for specifying
-/// [`Currency::BASE`] for currencies have a [`Currency::Backing`] set to [`U256`].
-pub const fn u64_to_u256(n: u64) -> U256 {
-    U256([n, 0, 0, 0])
 }
 
 
