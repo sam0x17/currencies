@@ -13,7 +13,7 @@ features include:
 
 - Built-in support for all ISO-4217 currencies with proper precision and formatting
 - Support for a variety of cryptocurrencies, also with proper underlying data types and
-  formatting. Accurate implementations for `AAVE`, `ETH`, `BTC`, `DOT`, and `KSM` are included.
+  formatting. Accurate implementations for `ETH`, `BTC`, `DOT`, `KSM` and `AAVE` are included.
 - The ability to specify whether an `Amount` is allowed to make use of unchecked math, or not,
   at compile-time. Normally this is impossible to control since the `core:ops` operators are
   set up such that the checked operators require their unchecked counterparts to be implemented
