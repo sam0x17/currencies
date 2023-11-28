@@ -1,16 +1,16 @@
 //! Home of the [`Currency`] trait, all built-in currencies such as [`USD`], [`AAVE`], [`ETH`],
 //! etc., the [`define_currency!`](`crate::define_currency`) macro, and related/supporting
 //! types.
-//! 
+//!
 //! All representable currencies from the ISO-4217 list are included here, as well as several
 //! cryptocurrencies.
 
 use crate::amount::*;
-use crate::u256::{U256, u64_to_u256};
+use crate::u256::{u64_to_u256, U256};
 
 /// Determines how an [`Amount`] in this [`Currency`] should be displayed when it is sent to a
 /// [`core::fmt::Debug`] or [`core::fmt::Display`] impl.
-/// 
+///
 /// See individual variants for a concise description.
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub enum FormatStyle {
@@ -40,10 +40,10 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     type Backing: Backing;
 
     /// Determines the numerical base of an [`Amount`] of this [`Currency`].
-    /// 
+    ///
     /// For base ten currencies, this should be a `1` followed by a number of zeroes
     /// corresponding with the number of supported digits to the right of the decimal place.
-    /// 
+    ///
     /// Some very rare currencies use a base other than 10, such as Malagasy ariary. For these
     /// you should use an appropriate base.
     const BASE: Self::Backing;
@@ -91,13 +91,13 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
 }
 
 /// Shorthand for defining a new [`Currency`]. All ISO-4217 currencies already have an entry.
-/// 
+///
 /// Example:
-/// 
+///
 /// ```ignore
 /// define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
 /// ````
-/// 
+///
 /// where:
 /// - the first argument should be an ident specifying the (programmatic and short-hand) name
 ///   of the currency
@@ -121,13 +121,13 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
 #[macro_export]
 macro_rules! define_currency {
     (
-        $currency_name:ident, 
-        $base_type:ty, 
-        $base:expr, 
-        $symbol:expr, 
-        $proper_name:expr, 
+        $currency_name:ident,
+        $base_type:ty,
+        $base:expr,
+        $symbol:expr,
+        $proper_name:expr,
         $style:ident,
-        $is_iso:expr, 
+        $is_iso:expr,
         $is_crypto:expr
     ) => {
         #[doc = concat!($proper_name, " (", $symbol, ")")]

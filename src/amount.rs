@@ -5,10 +5,7 @@ use core::{
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
 };
 use num_integer::Integer;
-use num_traits::{
-    CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, PrimInt, ToPrimitive,
-    Unsigned, Zero,
-};
+use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, PrimInt, ToPrimitive, Unsigned, Zero};
 
 use crate::currency::*;
 use crate::safety::{self, *};
@@ -264,9 +261,7 @@ impl<C: Currency> Mul for Amount<C, Checked> {
     type Output = Option<Self>;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Some(Self::from_raw(
-            self.0.checked_mul(&rhs.0)?.checked_div(&C::BASE)?,
-        ))
+        Some(Self::from_raw(self.0.checked_mul(&rhs.0)?.checked_div(&C::BASE)?))
     }
 }
 

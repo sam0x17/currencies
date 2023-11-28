@@ -22,10 +22,7 @@ mod sealed {
     /// When [`Checked`](`super::Checked`) is selected, only checked arithmetic operations are
     /// allowed and unchecked math becomes completely unavailable. This is ideal for
     /// environments where an uncaught panic could have dire consequences.
-    pub trait Safety:
-        Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::fmt::Debug + core::hash::Hash
-    {
-    }
+    pub trait Safety: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::fmt::Debug + core::hash::Hash {}
 }
 
 impl Safety for Unchecked {}
