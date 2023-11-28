@@ -2,6 +2,7 @@
 name = "currencies"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/sam0x17/currencies"
 description = "Allows for generic manipulation of currencies (both real-world and cryptocurrencies) with optionally compile-time enforced checked math and support for all ISO-4217 currencies."
 keywords = ["money", "currency", "cryptocurrency", "dollar", "currencies"]
 authors = ["sam0x17"]
