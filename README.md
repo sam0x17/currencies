@@ -26,6 +26,7 @@ features include:
 - A painstakingly wrapped version of `primitive_types::U256` that implements many more useful
   `num-traits` and `num-integer` traits than what Parity includes with the `num-traits`
   feature, and are often required when working with amounts of a currency.
+- All provided currencies implement most useful `num-traits` and `num-integer` traits.
 - Thorough testing of all of the above.
 
 ## Future Work
@@ -33,3 +34,4 @@ features include:
 - Currency conversion facilities, possibly including an online data source
 - Add `Signedness` support to `Amount`
 - Additional testing
+- Support for negative amounts via an additional const generic defaulting to `Positive`
