@@ -1,4 +1,9 @@
-# currencies
+# 💰 currencies
+
+[![Crates.io](https://img.shields.io/crates/v/currencies)](https://crates.io/crates/currencies)
+[![docs.rs](https://img.shields.io/docsrs/currencies?label=docs)](https://docs.rs/currencies/latest/currencies/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/sam0x17/currencies/ci.yaml)](https://github.com/sam0x17/currencies/actions/workflows/ci.yaml?query=branch%3Amain)
+[![MIT License](https://img.shields.io/github/license/sam0x17/currencies)](https://github.com/sam0x17/currencies/blob/main/LICENSE)
 
 This crate provides a generic `Currency` and corresponding `Amount` type that can handle basic
 arithmetic operations and formatting of arbitrary currencies and cryptocurrencies. Main
