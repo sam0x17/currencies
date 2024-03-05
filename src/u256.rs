@@ -214,12 +214,8 @@ impl Integer for U256 {
         U256(product.div(gcd_val.0))
     }
 
-    fn divides(&self, other: &Self) -> bool {
-        !self.is_zero() && other.0.rem(self.0).is_zero()
-    }
-
     fn is_multiple_of(&self, other: &Self) -> bool {
-        !(*other).is_zero() && (self.rem(*other)).is_zero()
+        !self.is_zero() && other.0.rem(self.0).is_zero()
     }
 
     fn is_even(&self) -> bool {
@@ -440,13 +436,13 @@ fn test_lcm() {
 }
 
 #[test]
-fn test_divides() {
+fn test_is_multiple_of() {
     let a: U256 = 4.into();
     let b: U256 = 20.into();
-    assert!(a.divides(&b));
+    assert!(a.is_multiple_of(&b));
 
     let c: U256 = 3.into();
-    assert!(!c.divides(&b));
+    assert!(!c.is_multiple_of(&b));
 
     let a = U256::from(24);
     let b = U256::from(4);
@@ -454,21 +450,11 @@ fn test_divides() {
     let d = U256::from(0);
     let e = U256::from(1);
 
-    assert!(b.divides(&a)); // 4 divides 24
-    assert!(!c.divides(&a)); // 5 doesn't divide 24
-    assert!(!d.divides(&a)); // 0 doesn't divide any number
-    assert!(e.divides(&a)); // 1 divides every number
-    assert!(a.divides(&d)); // Every number divides 0
-}
-
-#[test]
-fn test_is_multiple_of() {
-    let a: U256 = 20.into();
-    let b: U256 = 4.into();
-    assert!(a.is_multiple_of(&b));
-
-    let c: U256 = 3.into();
-    assert!(!a.is_multiple_of(&c));
+    assert!(b.is_multiple_of(&a)); // 4 is_multiple_of 24
+    assert!(!c.is_multiple_of(&a)); // 5 doesn't divide 24
+    assert!(!d.is_multiple_of(&a)); // 0 doesn't divide any number
+    assert!(e.is_multiple_of(&a)); // 1 is_multiple_of every number
+    assert!(a.is_multiple_of(&d)); // Every number is_multiple_of 0
 }
 
 #[test]
