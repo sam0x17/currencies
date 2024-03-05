@@ -120,6 +120,22 @@ pub struct Amount<C: Currency = USD, Safety: safety::Safety = Unchecked>(
     // TODO: eventually we could add Signedness here
 );
 
+impl<C: Currency, Safety: safety::Safety> Amount<C, Safety> {
+    /// Allows direct access to the raw [`Backing`] value used to internally represent this [`Amount`].
+    pub fn raw_backing(&self) -> C::Backing {
+        self.0
+    }
+
+    /// Allows direct mutable access to the raw [`Backing`] value used to internally represent
+    /// this [`Amount`].
+    ///
+    /// This method should be used with care as no checks are performed when directly
+    /// manipulating the internal [`Backing`].
+    pub fn raw_backing_mut(&mut self) -> &mut C::Backing {
+        &mut self.0
+    }
+}
+
 impl<C: Currency, Safety: safety::Safety> core::fmt::Display for Amount<C, Safety> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let decimals = C::BASE.trailing_zeros() as usize;
