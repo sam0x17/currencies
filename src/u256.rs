@@ -2,6 +2,8 @@
 //! [`primitive_types::U256`] with several custom impls and additional traits from
 //! [`num_traits`] that are necessary for currency manipulation but not included by default.
 
+#![allow(deprecated)]
+
 use core::ops::*;
 use num_integer::Integer;
 use num_traits::*;
