@@ -1,13 +1,11 @@
 //! Home of the [`Amount`] struct and supporting types and impls.
 
-use alloc::string::ToString;
 use core::{
     marker::PhantomData,
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
 };
 use num_integer::Integer;
 use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, PrimInt, ToPrimitive, Unsigned, Zero};
-use serde::Serialize;
 
 use crate::currency::*;
 use crate::safety::{self, *};
@@ -379,16 +377,6 @@ impl<C: Currency> Zero for Amount<C, Unchecked> {
 
     fn is_zero(&self) -> bool {
         self.0.is_zero()
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<C: Currency, Safety: safety::Safety> Serialize for Amount<C, Safety> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.collect_str(self)
     }
 }
 
