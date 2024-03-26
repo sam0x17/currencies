@@ -24,10 +24,9 @@ mod u256;
 pub use u256::U256;
 pub mod safety;
 
+/// Contains impls for [`serde`] integration
 #[cfg(feature = "serde")]
-mod serde_integration;
-#[cfg(feature = "serde")]
-pub use serde_integration::*;
+pub mod serde_integration;
 
 #[cfg(test)]
 extern crate alloc;

@@ -380,6 +380,17 @@ impl<C: Currency> Zero for Amount<C, Unchecked> {
     }
 }
 
+// /// Indicates that an [`Amount`] failed to parse from a string representation.
+// pub struct ParseError;
+
+// impl<C: Currency, Safety: safety::Safety> FromStr for Amount<C, Safety> {
+//     type Err = ParseError;
+
+//     fn from_str(s: &str) -> Result<Self, Self::Err> {
+//         todo!()
+//     }
+// }
+
 #[cfg(test)]
 use crate::*;
 
