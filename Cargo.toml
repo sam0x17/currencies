@@ -12,4 +12,9 @@ license = "MIT"
 num-integer = "0.1"
 num-traits = "0.2"
 primitive-types = { version = "0.12", features = ["num-traits"] }
+serde = { version = "1", optional = true }
 uint = "0.9"
+
+[features]
+default = ["serde"]
+serde = ["dep:serde"]
