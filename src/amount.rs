@@ -3,6 +3,7 @@
 use core::{
     marker::PhantomData,
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, Shl, Shr, Sub, SubAssign},
+    str::FromStr,
 };
 use num_integer::Integer;
 use num_traits::{CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, FromPrimitive, Num, One, PrimInt, ToPrimitive, Unsigned, Zero};
@@ -49,6 +50,7 @@ pub trait Backing:
     + TrailingZeros
     + From<u32>
     + ToPrimitive
+    + FromStr
 {
 }
 
@@ -85,6 +87,7 @@ impl<
             + core::fmt::Display
             + TrailingZeros
             + From<u32>
+            + FromStr
             + ToPrimitive,
     > Backing for T
 {
@@ -391,17 +394,6 @@ impl<C: Currency> From<Amount<C, Unchecked>> for Amount<C, Checked> {
         Self::from_raw(amount.0)
     }
 }
-
-// /// Indicates that an [`Amount`] failed to parse from a string representation.
-// pub struct ParseError;
-
-// impl<C: Currency, Safety: safety::Safety> FromStr for Amount<C, Safety> {
-//     type Err = ParseError;
-
-//     fn from_str(s: &str) -> Result<Self, Self::Err> {
-//         todo!()
-//     }
-// }
 
 #[cfg(test)]
 use crate::*;

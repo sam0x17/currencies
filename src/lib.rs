@@ -13,7 +13,7 @@
 //! checked arithmetic operations and requires consuming an [`Option`] in all fallible
 //! circumstances.
 
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 
 pub mod amount;
@@ -23,6 +23,11 @@ pub use currency::Currency;
 mod u256;
 pub use u256::U256;
 pub mod safety;
+
+#[cfg(feature = "parsing")]
+mod parsing;
+#[cfg(feature = "parsing")]
+pub use parsing::*;
 
 /// Contains impls for [`serde`] integration
 #[cfg(feature = "serde")]

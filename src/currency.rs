@@ -88,6 +88,17 @@ pub trait Currency: Copy + Clone + PartialEq + Eq + PartialOrd + Ord + core::has
     /// This is provided separately from `IS_ISO` to prepare for a future where one or more
     /// cryptocurrencies are included in ISO-4217.
     const IS_CRYPTO: bool;
+
+    /// Returns the number of digits to the right of the decimal point for this [`Currency`].
+    fn decimal_digits() -> usize {
+        let mut base = Self::BASE;
+        let mut digits = 0;
+        while base > 1.into() {
+            base /= 10.into();
+            digits += 1;
+        }
+        digits
+    }
 }
 
 /// Shorthand for defining a new [`Currency`]. All ISO-4217 currencies already have an entry.

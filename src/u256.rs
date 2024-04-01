@@ -4,7 +4,7 @@
 
 #![allow(deprecated)]
 
-use core::ops::*;
+use core::{ops::*, str::FromStr};
 use num_integer::Integer;
 use num_traits::*;
 
@@ -21,6 +21,17 @@ pub struct U256(pub primitive_types::U256);
 impl U256 {
     /// Specifies the maximum representable value for this [`U256`].
     pub const MAX_VALUE: U256 = U256(primitive_types::U256::MAX);
+}
+
+impl FromStr for U256 {
+    type Err = <primitive_types::U256 as num_traits::Num>::FromStrRadixErr;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match primitive_types::U256::from_str_radix(s, 10) {
+            Ok(val) => Ok(U256(val)),
+            Err(err) => Err(err),
+        }
+    }
 }
 
 impl TrailingZeros for U256 {
