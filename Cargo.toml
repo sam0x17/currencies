@@ -11,10 +11,8 @@ license = "MIT"
 [dependencies]
 num-integer = "0.1"
 num-traits = "0.2"
-once_cell = { version = "1.19", optional = true }
 primitive-types = { version = "0.12", features = ["num-traits"] }
 quoth = { version = "0.1.4", optional = true }
-regex = { version = "1.10", optional = true }
 serde = { version = "1", optional = true }
 uint = "0.9"
 
@@ -25,4 +23,4 @@ serde_json = "1"
 default = ["parsing"]
 serde = ["dep:serde"]
 std = []
-parsing = ["serde", "std", "dep:quoth", "dep:once_cell", "dep:regex"]
+parsing = ["serde", "std", "dep:quoth"]

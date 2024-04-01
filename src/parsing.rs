@@ -1,6 +1,4 @@
 use core::{fmt::Debug, str::FromStr};
-use once_cell::sync::Lazy;
-use regex::Regex;
 
 use crate::safety::Unchecked;
 
@@ -8,8 +6,6 @@ use super::*;
 use crate::currency::*;
 
 use quoth::{Parsable, ParsableExt, ParseStream, Span, Spanned};
-
-static NUM_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\d+(,\d+)*").unwrap());
 
 /// Represents an [`Amount`] that has been parsed from a string representation. Includes
 /// [`Span`] information.
@@ -40,7 +36,17 @@ impl<C: Currency, Safety: safety::Safety> Parsable for ParsedAmount<C, Safety> {
             let _space = stream.parse_str(" ")?;
         }
         let whole_start_position = stream.position;
-        let whole_part = stream.parse_regex(&*NUM_REGEX)?;
+        let mut whole_digits = Vec::new();
+        loop {
+            if stream.next_digit().is_ok() {
+                whole_digits.push(stream.parse_digit()?);
+            } else if whole_digits.len() > 0 && stream.next_char() == Ok(',') {
+                stream.consume(1)?;
+                whole_digits.push(stream.parse_digit()?);
+            } else {
+                break;
+            }
+        }
         let _dot = stream.parse_str(".")?;
         let mut decimal_digits = Vec::new();
         let decimal_start_position = stream.position;
@@ -57,7 +63,12 @@ impl<C: Currency, Safety: safety::Safety> Parsable for ParsedAmount<C, Safety> {
             decimal_digits.push(0);
         }
         let dec_end_position = stream.position;
-        let raw = format!("{}{}", whole_part, decimal_digits.into_iter().map(|d| d.to_string()).collect::<String>()).replace(",", "");
+        let raw = format!(
+            "{}{}",
+            whole_digits.into_iter().map(|d| d.to_string()).collect::<String>(),
+            decimal_digits.into_iter().map(|d| d.to_string()).collect::<String>()
+        )
+        .replace(",", "");
         println!("raw: {}", raw);
         let backing = C::Backing::from_str(&raw).map_err(|_| {
             quoth::Error::new(
@@ -115,4 +126,31 @@ fn test_parsing_usd() {
     assert_eq!(Amount::<USD>::from_raw(010).to_string(), "$0.10");
     assert_eq!(amount.to_string(), "$0.10");
     assert_eq!(amount, Amount::from_raw(010));
+}
+
+#[test]
+fn test_parsing_ada() {
+    assert_eq!(ADA::decimal_digits(), 6);
+
+    let amount: Amount<ADA> = "₳1,000.000000".parse().unwrap();
+    // assert_eq!(amount, Amount::from_raw(1_000_000_000_000));
+
+    // assert!("₳1,000000000".parse::<Amount<ADA>>().unwrap_err().to_string().contains("expected `.`"));
+
+    // let amount: Amount<ADA> = "₳2748972.980000".parse().unwrap();
+    // assert_eq!(amount, Amount::from_raw(2_748_972_980_000));
+
+    // let amount: Amount<ADA> = "₳0.010000".parse().unwrap();
+    // assert_eq!(amount, Amount::from_raw(10_000));
+
+    // assert!("₳0.000001"
+    //     .parse::<Amount<ADA>>()
+    //     .unwrap_err()
+    //     .to_string()
+    //     .contains("too many decimal digits"));
+
+    // let amount: Amount<ADA> = "₳0.100000".parse().unwrap();
+    // assert_eq!(Amount::<ADA>::from_raw(100_000).to_string(), "₳0.100000");
+    // assert_eq!(amount.to_string(), "₳0.100000");
+    // assert_eq!(amount, Amount::from_raw(100_000));
 }
