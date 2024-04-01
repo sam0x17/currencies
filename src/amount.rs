@@ -380,6 +380,18 @@ impl<C: Currency> Zero for Amount<C, Unchecked> {
     }
 }
 
+impl<C: Currency> From<Amount<C, Checked>> for Amount<C, Unchecked> {
+    fn from(amount: Amount<C, Checked>) -> Self {
+        Self::from_raw(amount.0)
+    }
+}
+
+impl<C: Currency> From<Amount<C, Unchecked>> for Amount<C, Checked> {
+    fn from(amount: Amount<C, Unchecked>) -> Self {
+        Self::from_raw(amount.0)
+    }
+}
+
 // /// Indicates that an [`Amount`] failed to parse from a string representation.
 // pub struct ParseError;
 
