@@ -91,11 +91,13 @@ impl<C: Currency, Safety: safety::Safety> Parsable for ParsedAmount<C, Safety> {
 }
 
 impl<C: Currency, Safety: safety::Safety> FromStr for Amount<C, Safety> {
-    type Err = quoth::Error;
+    type Err = serde::de::value::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut stream = ParseStream::from(s);
-        let parsed = stream.parse::<ParsedAmount<C, Safety>>()?;
+        let parsed = stream
+            .parse::<ParsedAmount<C, Safety>>()
+            .map_err(|err| serde::de::Error::custom(err.to_string()))?;
         Ok(parsed.amount)
     }
 }

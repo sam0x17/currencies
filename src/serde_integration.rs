@@ -69,8 +69,8 @@ fn serialize_deserialize_unchecked() {
     let serialized = serde_json::to_string(&amount).expect("Failed to serialize");
     assert_eq!(serialized, "\"$123.45\"");
 
-    // let deserialized: Amount<USD, Unchecked> = serde_json::from_str(&serialized).expect("Failed to deserialize");
-    // assert_eq!(deserialized, amount);
+    let deserialized: Amount<USD, Unchecked> = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, amount);
 }
 
 // Tests serialization and deserialization for an Amount with checked safety.
@@ -80,8 +80,8 @@ fn serialize_deserialize_checked() {
     let serialized = serde_json::to_string(&amount).expect("Failed to serialize");
     assert_eq!(serialized, "\"$678.90\"");
 
-    // let deserialized: Amount<USD, Checked> = serde_json::from_str(&serialized).expect("Failed to deserialize");
-    // assert_eq!(deserialized, amount);
+    let deserialized: Amount<USD, Checked> = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, amount);
 }
 
 // Optional: Test serialization and deserialization with other currencies or complex scenarios
@@ -92,6 +92,6 @@ fn serialize_deserialize_eth() {
     let serialized = serde_json::to_string(&amount).expect("Failed to serialize");
     assert_eq!(serialized, "\"123456789012.345678901234567890 ETH\"");
 
-    // let deserialized: Amount<ETH, Unchecked> = serde_json::from_str(&serialized).expect("Failed to deserialize");
-    // assert_eq!(deserialized, amount);
+    let deserialized: Amount<ETH, Unchecked> = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(deserialized, amount);
 }
