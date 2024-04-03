@@ -12,7 +12,7 @@ license = "MIT"
 num-integer = "0.1"
 num-traits = "0.2"
 primitive-types = { version = "0.12", features = ["num-traits"] }
-quoth = { version = "0.1.4", optional = true }
+quoth = { version = "0.1.6", optional = true, git = "https://github.com/sam0x17/quoth.git", branch = "main" }
 serde = { version = "1", optional = true }
 uint = "0.9"
 

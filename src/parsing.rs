@@ -69,7 +69,6 @@ impl<C: Currency, Safety: safety::Safety> Parsable for ParsedAmount<C, Safety> {
             decimal_digits.into_iter().map(|d| d.to_string()).collect::<String>()
         )
         .replace(",", "");
-        println!("raw: {}", raw);
         let backing = C::Backing::from_str(&raw).map_err(|_| {
             quoth::Error::new(
                 Span::new(stream.source().clone(), whole_start_position..dec_end_position),
@@ -133,24 +132,24 @@ fn test_parsing_ada() {
     assert_eq!(ADA::decimal_digits(), 6);
 
     let amount: Amount<ADA> = "₳1,000.000000".parse().unwrap();
-    // assert_eq!(amount, Amount::from_raw(1_000_000_000_000));
+    assert_eq!(amount, Amount::from_raw(1000_000000));
 
-    // assert!("₳1,000000000".parse::<Amount<ADA>>().unwrap_err().to_string().contains("expected `.`"));
+    assert!("₳1,000000000".parse::<Amount<ADA>>().unwrap_err().to_string().contains("expected `.`"));
 
-    // let amount: Amount<ADA> = "₳2748972.980000".parse().unwrap();
-    // assert_eq!(amount, Amount::from_raw(2_748_972_980_000));
+    let amount: Amount<ADA> = "₳2748972.980000".parse().unwrap();
+    assert_eq!(amount, Amount::from_raw(2_748_972_980_000));
 
-    // let amount: Amount<ADA> = "₳0.010000".parse().unwrap();
-    // assert_eq!(amount, Amount::from_raw(10_000));
+    let amount: Amount<ADA> = "₳0.010000".parse().unwrap();
+    assert_eq!(amount, Amount::from_raw(10_000));
 
-    // assert!("₳0.000001"
-    //     .parse::<Amount<ADA>>()
-    //     .unwrap_err()
-    //     .to_string()
-    //     .contains("too many decimal digits"));
+    assert!("₳0.0000001"
+        .parse::<Amount<ADA>>()
+        .unwrap_err()
+        .to_string()
+        .contains("too many decimal digits"));
 
-    // let amount: Amount<ADA> = "₳0.100000".parse().unwrap();
-    // assert_eq!(Amount::<ADA>::from_raw(100_000).to_string(), "₳0.100000");
-    // assert_eq!(amount.to_string(), "₳0.100000");
-    // assert_eq!(amount, Amount::from_raw(100_000));
+    let amount: Amount<ADA> = "₳0.100000".parse().unwrap();
+    assert_eq!(Amount::<ADA>::from_raw(100_000).to_string(), "₳0.100000");
+    assert_eq!(amount.to_string(), "₳0.100000");
+    assert_eq!(amount, Amount::from_raw(100_000));
 }
