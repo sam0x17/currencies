@@ -1,6 +1,6 @@
 [package]
 name = "currencies"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 repository = "https://github.com/sam0x17/currencies"
 description = "Allows for generic manipulation of currencies (both real-world and cryptocurrencies) with optionally compile-time enforced checked math and support for all ISO-4217 currencies."
@@ -12,7 +12,7 @@ license = "MIT"
 num-integer = "0.1"
 num-traits = "0.2"
 primitive-types = { version = "0.12", features = ["num-traits"] }
-quoth = { version = "0.1.6", optional = true, git = "https://github.com/sam0x17/quoth.git", branch = "main" }
+quoth = { version = "0.1.6", optional = true }
 serde = { version = "1", optional = true }
 uint = "0.9"
 
