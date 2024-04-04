@@ -162,7 +162,7 @@ define_currency!(BTC, u64, 1_00000000, "BTC", "Bitcoin", SuffixSpaced, false, tr
 define_currency!(ETH, U256, u64_to_u256(1_000000000000000000), "ETH", "Ethereum", SuffixSpaced, false, true);
 define_currency!(AAVE, U256, ETH::BASE, "AAVE", "Aave Token", SuffixSpaced, false, true);
 
-define_currency!(ADA, u64, 1_000000, "₳", "ADA", PrefixAttached, false, true);
+define_currency!(ADA, u64, 1_000000, "ADA", "Cardano", SuffixSpaced, false, true);
 define_currency!(BOOK, u64, 1_000000, "BOOK", "$BOOK", SuffixSpaced, false, true);
 
 define_currency!(DOT, u128, 10000000000u128, "DOT", "Polkadot", SuffixSpaced, false, true);
