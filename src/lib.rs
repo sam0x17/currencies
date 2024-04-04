@@ -22,8 +22,7 @@ pub mod currency;
 pub use currency::Currency;
 mod u256;
 pub use u256::U256;
-mod safety;
-pub use safety::*;
+pub mod safety;
 
 #[cfg(feature = "parsing")]
 mod parsing;
