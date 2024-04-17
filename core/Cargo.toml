@@ -1,0 +1,22 @@
+[package]
+name = "currencies-core"
+version = "0.3.2"
+edition = "2021"
+authors = ["sam0x17"]
+description = "core types for the currencies crate"
+
+[dependencies]
+num-integer = "0.1"
+num-traits = "0.2"
+primitive-types = { version = "0.12", features = ["num-traits"] }
+quoth = { version = "0.1.6", optional = true }
+serde = { version = "1", optional = true }
+uint = "0.9"
+
+[dev-dependencies]
+serde_json = "1"
+
+[features]
+serde = ["dep:serde"]
+std = []
+parsing = ["serde", "std", "dep:quoth"]

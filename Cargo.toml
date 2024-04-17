@@ -1,3 +1,4 @@
+workspace = { members = ["core"] }
 [package]
 name = "currencies"
 version = "0.3.2"
@@ -9,18 +10,10 @@ authors = ["sam0x17"]
 license = "MIT"
 
 [dependencies]
-num-integer = "0.1"
-num-traits = "0.2"
-primitive-types = { version = "0.12", features = ["num-traits"] }
-quoth = { version = "0.1.6", optional = true }
-serde = { version = "1", optional = true }
-uint = "0.9"
-
-[dev-dependencies]
-serde_json = "1"
+currencies-core = { version = "0.3.2", path = "core" }
 
 [features]
 default = ["parsing"]
-serde = ["dep:serde"]
-std = []
-parsing = ["serde", "std", "dep:quoth"]
+serde = ["currencies-core/serde"]
+std = ["currencies-core/std"]
+parsing = ["currencies-core/parsing"]
