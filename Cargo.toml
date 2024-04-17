@@ -1,4 +1,4 @@
-workspace = { members = ["core"] }
+workspace = { members = ["core", "macros"] }
 [package]
 name = "currencies"
 version = "0.3.2"
@@ -11,6 +11,7 @@ license = "MIT"
 
 [dependencies]
 currencies-core = { version = "0.3.2", path = "core" }
+currencies-macros = { version = "0.3.2", path = "macros" }
 
 [features]
 default = ["parsing"]

@@ -4,6 +4,9 @@ version = "0.3.2"
 edition = "2021"
 authors = ["sam0x17"]
 description = "core types for the currencies crate"
+license = "MIT"
+repository = "https://github.com/sam0x17/currencies"
+keywords = ["core"]
 
 [dependencies]
 num-integer = "0.1"

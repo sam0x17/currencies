@@ -1,0 +1,18 @@
+[package]
+name = "currencies-macros"
+version = "0.3.2"
+edition = "2021"
+authors = ["sam0x17"]
+repository = "https://github.com/sam0x17/currencies"
+license = "MIT"
+description = "macros for the currencies crate"
+keywords = ["macros"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "1"
+proc-macro2 = "1"
+syn = "2"
+currencies-core = { version = "0.3.2", path = "../core" }
