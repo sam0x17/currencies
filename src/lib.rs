@@ -17,3 +17,4 @@
 #![warn(missing_docs)]
 
 pub use currencies_core::*;
+pub use currencies_macros::*;

@@ -15,4 +15,5 @@ proc-macro = true
 quote = "1"
 proc-macro2 = "1"
 syn = "2"
-currencies-core = { version = "0.3.2", path = "../core" }
+currencies-core = { version = "0.3.2", path = "../core", features = ["parsing"] }
+derive-syn-parse = "0.2"
