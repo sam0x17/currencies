@@ -53,9 +53,34 @@ impl core::fmt::Debug for U256 {
 }
 
 /// Const function capable of constructing a [`U256`] from a [`u64`], useful for specifying
-/// [`Currency::BASE`] for currencies have a [`Currency::Backing`] set to [`U256`].
+/// [`Currency::BASE`](crate::Currency::BASE) for currencies have a
+/// [`Currency::Backing`](crate::Currency::Backing) set to [`U256`].
 pub const fn u64_to_u256(n: u64) -> U256 {
     U256(primitive_types::U256([n, 0, 0, 0]))
+}
+
+impl From<u64> for U256 {
+    fn from(n: u64) -> Self {
+        U256(primitive_types::U256([n, 0, 0, 0]))
+    }
+}
+
+impl From<u32> for U256 {
+    fn from(n: u32) -> Self {
+        U256(primitive_types::U256([n as u64, 0, 0, 0]))
+    }
+}
+
+impl From<u8> for U256 {
+    fn from(n: u8) -> Self {
+        U256(primitive_types::U256([n as u64, 0, 0, 0]))
+    }
+}
+
+impl From<u128> for U256 {
+    fn from(n: u128) -> Self {
+        U256(primitive_types::U256::from(n))
+    }
 }
 
 impl Zero for U256 {
