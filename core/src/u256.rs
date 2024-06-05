@@ -67,13 +67,13 @@ impl From<u64> for U256 {
 
 impl From<u32> for U256 {
     fn from(n: u32) -> Self {
-        U256(primitive_types::U256([n as u64, 0, 0, 0]))
+        U256(primitive_types::U256::from(n))
     }
 }
 
 impl From<u8> for U256 {
     fn from(n: u8) -> Self {
-        U256(primitive_types::U256([n as u64, 0, 0, 0]))
+        U256(primitive_types::U256::from(n))
     }
 }
 
