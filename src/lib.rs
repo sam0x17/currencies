@@ -17,15 +17,15 @@
 //! ```
 //! use currencies::{*, currency::*};
 //!
-//! let apple_cost = Amount::<USD>::from_raw(3_24);
+//! let apple_cost = amt!(USD, "$3.24");
 //! let orange_cost = Amount::<USD>::from_raw(7_97);
 //! assert!(apple_cost < orange_cost);
 //! assert!(apple_cost + orange_cost > orange_cost);
 //! assert_eq!(format!("{}", apple_cost * orange_cost), "$25.82");
 //! assert_eq!(format!("{}", apple_cost * 3), "$9.72");
 //!
-//! let mut total = Amount::<DOT>::from_raw(5762244984_10000000004u128.into());
-//! total -= Amount::from_raw(1000_0000000000u128.into());
+//! let mut total = amt!(DOT, "57622449841.0000000004 DOT");
+//! total -= amt!(DOT, "1000.0 DOT");
 //! total *= Amount::from_raw(2_0000000000u64.into());
 //! assert_eq!(format!("{}", total), "115244897682.0000000008 DOT");
 //!```
@@ -39,7 +39,7 @@
 //! // operator-based syntax. Thus currency amounts like this should never panic and are
 //! // suitable for use in critical/infallible environments.
 //!
-//! let drink_cost = Amount::<USD, Checked>::from_raw(6_29);
+//! let drink_cost = amt_checked!(USD, "$6.29");
 //! let movie_cost = Amount::<USD, Checked>::from_raw(24_99);
 //! let Some(outing_cost) = drink_cost + movie_cost else {
 //! 	unimplemented!("compiler forces you to handle this!")
