@@ -59,30 +59,6 @@ pub const fn u64_to_u256(n: u64) -> U256 {
     U256(primitive_types::U256([n, 0, 0, 0]))
 }
 
-impl From<u64> for U256 {
-    fn from(n: u64) -> Self {
-        U256(primitive_types::U256([n, 0, 0, 0]))
-    }
-}
-
-impl From<u32> for U256 {
-    fn from(n: u32) -> Self {
-        U256(primitive_types::U256::from(n))
-    }
-}
-
-impl From<u8> for U256 {
-    fn from(n: u8) -> Self {
-        U256(primitive_types::U256::from(n))
-    }
-}
-
-impl From<u128> for U256 {
-    fn from(n: u128) -> Self {
-        U256(primitive_types::U256::from(n))
-    }
-}
-
 impl Zero for U256 {
     fn zero() -> Self {
         U256(primitive_types::U256([0, 0, 0, 0]))
