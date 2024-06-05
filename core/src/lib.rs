@@ -38,10 +38,10 @@ fn show_off_currency_math() {
     assert_eq!(format!("{}", apple_cost * orange_cost), "$25.82");
     assert_eq!(format!("{}", apple_cost * 3), "$9.72");
 
-    let mut total = Amount::<AAVE>::from_raw(5762244984_100000000000000004u128.into());
-    total -= Amount::from_raw(1000_000000000000000000u128.into());
-    total *= Amount::from_raw(2_000000000000000000u64.into());
-    assert_eq!(format!("{}", total), "11524487968.200000000000000008 AAVE");
+    let mut total = Amount::<DOT>::from_raw(5762244984_10000000004u128.into());
+    total -= Amount::from_raw(1000_0000000000u128.into());
+    total *= Amount::from_raw(2_0000000000u64.into());
+    assert_eq!(format!("{}", total), "115244897682.0000000008 DOT");
 }
 
 #[test]

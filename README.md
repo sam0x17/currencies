@@ -13,7 +13,8 @@ features include:
 
 - Built-in support for all ISO-4217 currencies with proper precision and formatting
 - Support for a variety of cryptocurrencies, also with proper underlying data types and
-  formatting. Accurate implementations for `ETH`, `BTC`, `DOT`, `KSM` and `AAVE` are included.
+  formatting. Accurate implementations for `ETH`, `BTC`, `DOT`, and a variety of other
+  cryptocurrencies are included.
 - The ability to specify whether an `Amount` is forced to only make use of unchecked math, or
   not, at compile-time. Normally this is impossible to control since the `core:ops` operators
   are set up such that the checked operators require their unchecked counterparts to be
@@ -43,10 +44,10 @@ fn show_off_currency_math() {
     assert_eq!(format!("{}", apple_cost * orange_cost), "$25.82");
     assert_eq!(format!("{}", apple_cost * 3), "$9.72");
 
-    let mut total = Amount::<AAVE>::from_raw(5762244984_100000000000000004u128.into());
-    total -= Amount::from_raw(1000_000000000000000000u128.into());
-    total *= Amount::from_raw(2_000000000000000000u64.into());
-    assert_eq!(format!("{}", total), "11524487968.200000000000000008 AAVE");
+    let mut total = Amount::<DOT>::from_raw(5762244984_10000000004u128.into());
+    total -= Amount::from_raw(1000_0000000000u128.into());
+    total *= Amount::from_raw(2_0000000000u64.into());
+    assert_eq!(format!("{}", total), "115244897682.0000000008 DOT");
 }
 
 #[test]
