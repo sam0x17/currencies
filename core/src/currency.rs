@@ -158,15 +158,31 @@ macro_rules! define_currency {
     };
 }
 
+define_currency!(USDC, u64, 1_000000, "USDC", "USD Coin", SuffixAttached, false, true);
+
 define_currency!(BTC, u64, 1_00000000, "BTC", "Bitcoin", SuffixSpaced, false, true);
 define_currency!(ETH, U256, u64_to_u256(1_000000000000000000), "ETH", "Ethereum", SuffixSpaced, false, true);
-define_currency!(AAVE, U256, ETH::BASE, "AAVE", "Aave Token", SuffixSpaced, false, true);
+
+define_currency!(SOL, u64, 1_000000000, "SOL", "Solana", SuffixSpaced, false, true);
+define_currency!(ALGO, u64, 1_000000, "ALGO", "Algorand", SuffixSpaced, false, true);
+define_currency!(ORCA, u64, 1_000000, "ORCA", "Orca", SuffixSpaced, false, true);
+define_currency!(AVAX, u64, 1_000000000, "AVAX", "Avalanche", SuffixSpaced, false, true);
+define_currency!(ZEC, u64, 1_00000000, "ZEC", "Zcash", SuffixSpaced, false, true);
+define_currency!(XMR, u64, 1_000000000000, "XMR", "Monero", SuffixSpaced, false, true);
+define_currency!(DOGE, u64, 1_000000, "DOGE", "Dogecoin", SuffixSpaced, false, true);
+define_currency!(LTC, u64, 1_000000, "LTC", "Litecoin", SuffixSpaced, false, true);
+define_currency!(MATIC, u64, 1_000000000000000000, "MATIC", "Polygon", SuffixSpaced, false, true);
+define_currency!(XLM, u64, 1_0000000, "XLM", "Stellar", SuffixSpaced, false, true);
+define_currency!(TAO, u128, 1000000000u128, "TAO", "Bittensor", SuffixSpaced, false, true);
+define_currency!(NEAR, u64, 1_000000000000000000, "NEAR", "Near Protocol", SuffixSpaced, false, true);
 
 define_currency!(ADA, u64, 1_000000, "ADA", "Cardano", SuffixSpaced, false, true);
 define_currency!(BOOK, u64, 1_000000, "BOOK", "$BOOK", SuffixSpaced, false, true);
 
 define_currency!(DOT, u128, 10000000000u128, "DOT", "Polkadot", SuffixSpaced, false, true);
 define_currency!(KSM, u128, 1000000000000u128, "KSM", "Kusama", SuffixSpaced, false, true);
+
+define_currency!(AAVE, U256, ETH::BASE, "AAVE", "Aave Token", SuffixSpaced, false, true);
 
 define_currency!(USD, u64, 1_00, "$", "United States Dollar", PrefixAttached, true, false);
 define_currency!(BAM, u64, 1_00, "KM", "Bosnia and Herzegovina Convertible Mark", SuffixSpaced, true, false);
@@ -286,7 +302,7 @@ define_currency!(PYG, u64, 1_00, "₲", "Paraguayan Guarani", SuffixSpaced, true
 define_currency!(QAR, u64, 1_00, "QR", "Qatari Riyal", SuffixSpaced, true, false);
 define_currency!(RON, u64, 1_00, "Leu", "Romanian Leu", SuffixSpaced, true, false);
 define_currency!(RSD, u64, 1_00, "DIN", "Serbian Dinar", SuffixSpaced, true, false);
-define_currency!(CNY, u64, 1_0, "¥", "Renminbi", PrefixAttached, true, false);
+define_currency!(CNY, u64, 1_0, "¥", "Chinese Yuan", PrefixAttached, true, false);
 define_currency!(RUB, u64, 1_00, "₽", "Russian Ruble", PrefixAttached, true, false);
 define_currency!(RWF, u64, 1_00, "Fr", "Rwandan Franc", SuffixSpaced, true, false);
 define_currency!(SAR, u64, 1_00, "Rl", "Saudi Riyal", SuffixSpaced, true, false);
