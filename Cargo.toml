@@ -1,7 +1,7 @@
 workspace = { members = ["core", "macros"] }
 [package]
 name = "currencies"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 repository = "https://github.com/sam0x17/currencies"
 description = "Allows for generic manipulation of currencies (both real-world and cryptocurrencies) with optionally compile-time enforced checked math and support for all ISO-4217 currencies."
@@ -10,8 +10,8 @@ authors = ["sam0x17"]
 license = "MIT"
 
 [dependencies]
-currencies-core = { version = "0.4.0", path = "core" }
-currencies-macros = { version = "0.4.0", path = "macros" }
+currencies-core = { version = "0.4.1", path = "core" }
+currencies-macros = { version = "0.4.1", path = "macros" }
 
 [features]
 default = ["parsing"]

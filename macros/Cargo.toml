@@ -1,6 +1,6 @@
 [package]
 name = "currencies-macros"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 authors = ["sam0x17"]
 repository = "https://github.com/sam0x17/currencies"
@@ -15,5 +15,5 @@ proc-macro = true
 quote = "1"
 proc-macro2 = "1"
 syn = "2"
-currencies-core = { version = "0.4.0", path = "../core", features = ["parsing"] }
+currencies-core = { version = "0.4.1", path = "../core", features = ["parsing"] }
 derive-syn-parse = "0.2"
